@@ -1,0 +1,283 @@
+*******************************************************************************
+* Copyright (C) 2019,2020 Maxim Integrated Products, Inc., All rights Reserved.
+*
+* This software is protected by copyright laws of the United States and
+* of foreign countries. This material may also be protected by patent laws
+* and technology transfer regulations of the United States and of foreign
+* countries. This software is furnished under a license agreement and/or a
+* nondisclosure agreement and may only be used or reproduced in accordance
+* with the terms of those agreements. Dissemination of this information to
+* any party or parties not specified in the license agreement and/or
+* nondisclosure agreement is expressly prohibited.
+*
+* The above copyright notice and this permission notice shall be included
+* in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+* IN NO EVENT SHALL MAXIM INTEGRATED BE LIABLE FOR ANY CLAIM, DAMAGES
+* OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*
+* Except as contained in this notice, the name of Maxim Integrated 
+* Products, Inc. shall not be used except as stated in the Maxim Integrated 
+* Products, Inc. Branding Policy.
+*
+* The mere transfer of this software does not imply any licenses
+* of trade secrets, proprietary technology, copyrights, patents,
+* trademarks, maskwork rights, or any other form of intellectual
+* property whatsoever. Maxim Integrated Products, Inc. retains all 
+* ownership rights.
+*******************************************************************************
+*/
+.SUBCKT MAX4128 1 2 3 4 5
+*               | | | | |
+*               | | | | Output
+*               | | | Negative Supply
+*               | | Positive Supply
+*               | Inverting Input
+*               Non-inverting Input
+*
+*
+*#ASSOC Category="Op-amps" symbol=Maxim_opamp_5_term
+* The following op-amps are covered by this model:
+*      MAX4124/MAX4128
+*
+* Date of model creation: 4-2-2020_7:56:08_PM
+* Level of Model Creator: 5.21_V1.6 / 05-21-19
+*
+* Revision History:
+*      v1.0 - Initial Release - AR
+*      v1.1 - Updated Noise 04-02-20
+*       
+*       
+*       
+*
+* Recommendations:
+*      Use PSPICE (or SPICE 2G6; other simulators may require translation)
+*      For a quick, effective design, use a combination of: data sheet
+*            specs, bench testing, and simulations with this macromodel
+*      For high impedance circuits, set GMIN=100F in the .OPTIONS statement
+*
+* Supported:
+*      Typical performance for temperature range (-40 to 125) degrees Celsius
+*      DC, AC, Transient, and Noise analyses.
+*      Most specs, including: offsets, DC PSRR, DC CMRR, input impedance,
+*            open loop gain, voltage ranges, supply current, ... , etc.
+*      Temperature effects for Ibias, Iquiescent, Iout short circuit 
+*            current, Vsat on both rails, Slew Rate vs. Temp and P.S.
+*
+* Not Supported:
+*      Some Variation in specs vs. Power Supply Voltage
+*      Vos distribution, Ib distribution for Monte Carlo
+*      Distortion (detailed non-linear behavior)
+*      Some Temperature analysis
+*      Process variation
+*      Behavior outside normal operating region
+*
+* Known Discrepancies in Model vs. Datasheet:
+* 
+*?@ Start SIMPLIS Encryption $$WC_SIMPLIS_ENCRYPT_TAG$$             
+*
+* CM / DM Input Parameters 
+C2  1 4 1.5P
+C3  2 4 1.5P
+R19  1 4 140MEG
+R20  2 4 140MEG
+R21  1 2 500K
+* Differential Stage 
+V1  3 10 -450M
+R1 10 11 69.0K
+R2 10 12 69.0K
+G1 10 11 10 11 1.44M
+G2 10 12 10 12 1.44M
+C1 11 12 11.5E-15
+MQ1 11 14 15 15 NMI 
+MQ2 12 2 15 15 NMI 
+I1 15 4 500U
+V3 16 4 -250M
+GD2 16 1 TABLE { V(16,1) } ((-100,-7.14P)(0,0)(1m,1u)(2m,1m)) 
+V2 3 13 -250M
+GD1 2 13 TABLE { V(2,13) } ((-100,-7.14P)(0,0)(1m,1u)(2m,1m)) 
+* Noise Stage 
+I2 21 20 1.00
+D1 20  0 DN1
+D2  0 21 DN1
+I3 22 23 1N
+R10 22 0  1k
+R11  0 23 1k
+E1 71 14 VALUE { (-13.5U) + V(20) * 3.83 + V(21) * 3.83 + V(22) * 3.83 + V(23) * 3.83 }
+I8 0 70 DC 1
+R22 0 70 1 TC=2.00U
+E5 1 71 VALUE {V(70)-1}
+EG1 VIBIAS 0 62 0 1
+EG2 VIBIOS 0 63 0 1
+EB1 VIB1 0 VALUE { (V(VIBIAS)+V(VIBIOS)) /2 }
+EB2 VIB2 0 VALUE { (V(VIBIAS)-V(VIBIOS)) /2 }
+GB1 1 0 VIB1 0 1u
+GB2 2 0 VIB2 0 1u
+I6 0 62 DC 1uA
+R17 0 62 REXP  859.7212
+I7 0 63 DC 1uA
+V100 63A 63 DC 0
+R18 0 63A 1.5K TC=0.00,0.00
+R16 0 61 1 TC=-108U,-5.93U
+G61 3 4 61 0 1
+G60 0 61 TABLE { V(3, 4) } ((0, 0)(1.00M,7.75U)(1.75,620U)(1.95,640U)(2.25,648U)(2.7,655U)(3.5,675U)
++ (5.25,735U)(6.5,775U)(6.51,776U))
+* PSRR / CMRR 
+G23  0 57 VALUE { V(35) * 14.2M + V(118) + V(128) + V(137) } 
+G30 0 110 3 0 1.60U
+R30 110 0 1G 
+GR30 110 0 110 0 1m 
+C30 110 0 1.98U
+G31 0 111 110 0 1 
+L31 111 112 7.96M
+R32 112 0 1G 
+GR32 112 0 112 0 1 
+G33 0 114 111 0 1 
+R34 114 0 1G 
+C34 114 0 397N
+GR34 114 0 114 0 1 
+G35 0 115 114 0 1 
+L35 115 116 159N
+R36 116 0 1G 
+GR36 116 0 116 0 1 
+G37 0 117 115 0 1 
+R37 117 0 1G 
+C37 117 0 159P
+GR37 117 0 117 0 1 
+G38 0 118 117 0 1 
+L38 118 119 159P
+R39 119 0 1G 
+GR39 119 0 119 0 1 
+G40 0 120 4 0 1.60U
+R40 120 0 1G 
+GR40 120 0 120 0 1m 
+C40 120 0 1.98U
+G41 0 121 120 0 1 
+L41 121 122 7.96M
+R42 122 0 1G 
+GR42 122 0 122 0 1 
+G43 0 124 121 0 1 
+R44 124 0 1G 
+C44 124 0 397N
+GR44 124 0 124 0 1 
+G45 0 125 124 0 1 
+L45 125 126 159N
+R46 126 0 1G 
+GR46 126 0 126 0 1 
+G147 0 127 125 0 1 
+R47 127 0 1G 
+C47 127 0 159P
+GR47 127 0 127 0 1 
+G48 0 128 127 0 1 
+L48 128 129 159P
+R49 129 0 1G 
+GR49 129 0 129 0 1 
+G50 0 130 VALUE { ( V(15) ) * 56.8U}
+R50 130 0 1G 
+GR50 130 0 130 0 1m 
+C50 130 0 1.98U
+G51 0 131 130 0 1 
+L51 131 132 15.9U
+R51 132 0 1G 
+GR51 132 0 132 0 1 
+G53 0 133 131 0 1 
+R53 133 0 1G 
+C53 133 0  159P
+GR53 133 0 133 0 1 
+G55 0 134 133 0 1 
+L55 134 135 159P
+R55 135 0 1G 
+GR55 135 0 135 0 1 
+G57 0 137 134 0 1 
+R57 137 0 1G 
+C57 137 0  159P
+GR57 137 0 137 0 1 
+*
+* OP Amp Output Gain / Response 
+G3  0 30 12 11 1
+R3 30  0 1.00K
+G4 0 31 3 4 0.00
+I4 0 31 DC 89.7
+R4 31 0 1
+E_VDDMAX VDE 0 3 4 1
+V_VDD1 31VDD1 0 3.25
+V_VDD2 31VDD2 0 1.35
+G_ABMII2 0 31B VALUE { V(31)*(LIMIT(((V(31VDD1)-V(VDE))/(V(31VDD1)-V(31VDD2))), 0, 1))}
+R_R3 31A 0 1 TC=0.00, 0.00
+G_ABMII1 0 31A VALUE { V(31)*(LIMIT(((V(VDE)-V(31VDD2))/(V(31VDD1)-V(31VDD2))), 0, 1))}
+G_G6 30 31C TABLE { V(30, 31C) } ((-100,-1n)(0,0)(1m,0.1)(2m,2))
+E_ABM1 31C 0 VALUE { (V(31A) + V(31B)) }
+R_R8 31B 0 1 TC=0.00, 0.00
+G5 32 0 3 4 0.00
+I5 32 0 DC 89.7
+R5 32  0 1 
+G_ABMII22 32B 0 VALUE { V(32)*(LIMIT(((V(31VDD1)-V(VDE))/(V(31VDD1)-V(31VDD2))), 0, 1))}
+R_R23 32A 0 1 TC=0.00, 0.00
+G_ABMII21 32A 0 VALUE { V(32)*(LIMIT(((V(VDE)-V(31VDD2))/(V(31VDD1)-V(31VDD2))), 0, 1))}
+G_G26 32C 30 TABLE { V(30, 32C) } ((-2m,2)(-1m,0.1)(0,0)(100,-1n))
+E_ABM21 0 32C VALUE { (V(32A) + V(32B)) }
+R_R28 32B 0 1 TC=0.00, 0.00
+G6  0 33 30 0 1m
+R6  33 0 1K
+G7  0 34 33 0 199M
+R7  34 0 1K
+C7  34 0 1.98U
+G8  0 37 34 0 1m
+R8  37 0 1K
+C8  37 0 3.18P
+G88A 0 377A 37 0 1m
+R88A 377A 0 1G
+GR88A 377A 0 377A 0 1m
+C88A  377A 0 6.12N
+G888A 0 378A 377A 0 1m
+R888A 378A 0 1G
+GR888A 378A 0 378A 0 1m
+C888A  378A 0 39.7P
+G9  0 38 378A 0 1m
+R9  39 0 1K
+L9  38 39 7.57M
+E9  35 0 38 0 1
+G10 33 0 TABLE { V(35,3) } ((-1,-1p)(0,0)(20.0,1n))(22.0,1))
+G11 33 0 TABLE { V(35,4) } ((-22.0,-1)((-20.0,-1n)(0,0)(1,1p))
+* Output Impedance / Saturation / Current Limit 
+R23 50 0 100MEG
+G20 0 50 57 96 2
+R15 57  96 0.50
+R14 57  0 70.0
+GD8 55 57 TABLE { V(55,57) } ((-0.2m,-250)(-0.1m,-1m)(0,0)(10,1p))
+GD9 57 56 TABLE { V(57,56) } ((-0.2m,-250)(-0.1m,-1m)(0,0)(10,1p))
+E3 55  0 VALUE { 0.00 + V(3) * 1 + V(51) * -19.5M }
+E4 56  0 VALUE { 0.00 + V(4) * 1 + V(52) * -10.7M }
+R12 51 0 1k
+R13 52 0 1k
+GD12 50 51 TABLE { V(50,51) } ((-10,-1n)(0,0)(1m,1m)(2m,1))
+GD13 50 52 TABLE { V(50,52) } ((-2m,-1)(-1m,-1m)(0,0)(10,1n))
+G21  3  0 VALUE { -500U + V(51) * 1M }
+G22  0  4 VALUE { -500U + V(52) * -1M }
+G71 96 5 99 0 1
+GD24A 98 98A TABLE { V(98,98A) } ((-3m,-1000)(-2m,-10)(-1m,-1)(0,0)(1,1n))
+GD24B 98 98B TABLE { V(98,98B) } ((-1,-1n)(0,0)(1m,1)(2m,10)(3m,1000))
+R24A 0 98A 1 TC=0.00,0.00
+R24B 0 98B 1 TC=0.00,0.00
+G70 0 98 TABLE { V(96,5) } ((-13.0,-50.0M)(-1.00M,-49.5M)(0,0)(1.00M,49.5M)(13.0,50.0M))
+E6 99 0 VALUE { V(98) * LIMIT((( V(3) - V(4) ) * 0.00 + 1.00), 0.00, 1E6 ) * LIMIT((( V(3) - V(4) ) * 370M + 0.00), 0, 1) }
+D3 4 5 DESD
+D4 5 3 DESD
+* Models
+.MODEL NMI NMOS(L=2.00U W=42.0U KP=200U LEVEL=1 )
+.MODEL DESD  D   N=1 IS=1.00E-15
+.MODEL DN1 D   IS=1P KF=290E-15 AF=1
+.MODEL REXP  RES TCE= 3.22713
+*
+*?@ End SIMPLIS Encryption
+*
+.ENDS MAX4128
+
+
+
+

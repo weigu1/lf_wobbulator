@@ -1,0 +1,834 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 2
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L weigu:Raspi_Pico U1
+U 1 1 61B63B7F
+P 3650 2500
+F 0 "U1" H 3650 3715 50  0000 C CNN
+F 1 "Raspi_Pico" H 3650 3624 50  0000 C CNN
+F 2 "RPi_Pico:RPi_Pico_SMD_TH" V 3650 2500 50  0001 C CNN
+F 3 "" H 3650 2500 50  0001 C CNN
+	1    3650 2500
+	1    0    0    -1  
+$EndComp
+$Sheet
+S 8550 5950 500  300 
+U 61CBC0EF
+F0 "lf_wobbulator_breakout boardsfile61CBC0EE.sch" 50
+F1 "lf_wobbulator_breakout boardsfile61CBC0EE.sch" 50
+$EndSheet
+Text Notes 900  2200 0    50   ~ 0
+GND
+Text Notes 1100 2200 0    50   ~ 0
+PGA
+Text Notes 1850 2200 0    50   ~ 0
+GND
+Text Notes 1450 2200 0    50   ~ 0
+Vout_DDS
+Text Notes 900  2400 0    50   ~ 0
+Programmable Gain Amp
+Text Notes 800  2550 0    50   ~ 0
+DDS AD9833 PGA breakout board
+Text Notes 880  2710 0    39   ~ 0
+CS_POT
+Text Notes 1120 2710 0    39   ~ 0
+MOSI
+Text Notes 1290 2710 0    39   ~ 0
+SCK
+Text Notes 1430 2710 0    39   ~ 0
+CS_DDS
+Text Notes 9600 2100 0    50   ~ 0
+CH2-
+Text Notes 9600 2250 0    50   ~ 0
+CH2+
+Text Notes 9600 2400 0    50   ~ 0
+CH1-
+Text Notes 9600 2550 0    50   ~ 0
+CH1+
+Text Notes 9600 2700 0    50   ~ 0
+CH3+
+Text Notes 9600 2850 0    50   ~ 0
+CH3-
+Text Notes 9600 3000 0    50   ~ 0
+CH4+
+Text Notes 9600 3150 0    50   ~ 0
+CH4-
+$Comp
+L weigu:GND #PWR09
+U 1 1 61D16163
+P 11000 2350
+AR Path="/61D16163" Ref="#PWR09"  Part="1" 
+AR Path="/61CBC0EF/61D16163" Ref="#PWR?"  Part="1" 
+F 0 "#PWR09" H 10850 2350 50  0001 C CNN
+F 1 "GND" H 11000 2047 50  0000 C CNN
+F 2 "" H 11000 2350 50  0001 C CNN
+F 3 "~" H 11000 2350 50  0001 C CNN
+	1    11000 2350
+	1    0    0    -1  
+$EndComp
+Text Notes 10100 2250 0    50   ~ 0
+5V VCC
+Text Notes 10250 2400 0    50   ~ 0
+GND
+Text Notes 10250 2550 0    50   ~ 0
+SCL
+Text Notes 10250 2700 0    50   ~ 0
+SDA
+Text Notes 10250 2850 0    50   ~ 0
+AD0
+Text Notes 10250 3000 0    50   ~ 0
+AD1
+Text Notes 9400 1850 0    50   ~ 0
+GY-MCP3424 breakout board
+Text Notes 1000 2800 0    50   ~ 0
+CS
+Text Notes 1130 2800 0    50   ~ 0
+DAT
+Text Notes 1280 2800 0    50   ~ 0
+CLK
+Text Notes 1430 2800 0    50   ~ 0
+FSY
+Text Notes 1580 2800 0    50   ~ 0
+GND
+Text Notes 1760 2800 0    50   ~ 0
+VCC
+$Comp
+L weigu:SIL1x2R J1
+U 1 1 61B61D80
+P 1050 1950
+F 0 "J1" V 950 1750 50  0000 R CNN
+F 1 "H_PGA" V 950 2300 50  0000 R CNN
+F 2 "" H 1050 1950 60  0000 C CNN
+F 3 "" H 1050 1950 60  0000 C CNN
+	1    1050 1950
+	0    -1   -1   0   
+$EndComp
+$Comp
+L weigu:SIL1x6R J3
+U 1 1 61B5D696
+P 1450 3000
+F 0 "J3" V 1350 2400 50  0000 C CNN
+F 1 "H_SPI" V 1350 3550 50  0000 C CNN
+F 2 "" H 1450 3850 60  0000 C CNN
+F 3 "" H 1450 3850 60  0000 C CNN
+	1    1450 3000
+	0    1    1    0   
+$EndComp
+Wire Notes Line
+	650  1900 2200 1900
+Wire Notes Line
+	2200 1900 2200 3000
+Wire Notes Line
+	2200 3000 650  3000
+Wire Notes Line
+	650  3000 650  1900
+$Comp
+L weigu:+5V #PWR03
+U 1 1 61B7B23A
+P 4500 1550
+F 0 "#PWR03" H 4500 1400 50  0001 C CNN
+F 1 "+5V" H 4500 1731 50  0000 C CNN
+F 2 "" H 4500 1550 50  0001 C CNN
+F 3 "" H 4500 1550 50  0001 C CNN
+	1    4500 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4350 1550 4500 1550
+$Comp
+L weigu:+5V #PWR02
+U 1 1 61B7B776
+P 1950 3250
+F 0 "#PWR02" H 1950 3100 50  0001 C CNN
+F 1 "+5V" H 1950 3431 50  0000 C CNN
+F 2 "" H 1950 3250 50  0001 C CNN
+F 3 "" H 1950 3250 50  0001 C CNN
+	1    1950 3250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1950 3250 1800 3250
+Wire Wire Line
+	1800 3250 1800 3050
+$Comp
+L weigu:GND #PWR01
+U 1 1 61B7BFC0
+P 1650 3050
+F 0 "#PWR01" H 1500 3050 50  0001 C CNN
+F 1 "GND" H 1650 2747 50  0000 C CNN
+F 2 "" H 1650 3050 50  0001 C CNN
+F 3 "~" H 1650 3050 50  0001 C CNN
+	1    1650 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:GND #PWR04
+U 1 1 61B7C59E
+P 4550 1750
+F 0 "#PWR04" H 4400 1750 50  0001 C CNN
+F 1 "GND" H 4550 1447 50  0000 C CNN
+F 2 "" H 4550 1750 50  0001 C CNN
+F 3 "~" H 4550 1750 50  0001 C CNN
+	1    4550 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4350 1750 4550 1750
+Wire Wire Line
+	1500 3050 1500 3450
+Wire Wire Line
+	1500 3450 2250 3450
+Wire Wire Line
+	2250 3450 2250 2150
+Wire Wire Line
+	2250 2150 2950 2150
+Wire Wire Line
+	1350 3050 1350 3500
+Wire Wire Line
+	1350 3500 2300 3500
+Wire Wire Line
+	2300 2350 2950 2350
+Wire Wire Line
+	2300 2350 2300 3500
+Wire Wire Line
+	1200 3050 1200 3550
+Wire Wire Line
+	1200 3550 2350 3550
+Wire Wire Line
+	2350 3550 2350 2450
+Wire Wire Line
+	2350 2450 2950 2450
+Wire Wire Line
+	2950 2550 2400 2550
+Wire Wire Line
+	2400 2550 2400 5350
+Wire Wire Line
+	2950 2650 2450 2650
+Wire Wire Line
+	2450 2650 2450 5300
+NoConn ~ 1750 1850
+$Comp
+L weigu:SIL1x2R J4
+U 1 1 61B612D1
+P 1800 1950
+F 0 "J4" V 1700 1750 50  0000 R CNN
+F 1 "H_VOUT" V 1700 2350 50  0000 R CNN
+F 2 "" H 1800 1950 60  0000 C CNN
+F 3 "" H 1800 1950 60  0000 C CNN
+	1    1800 1950
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 1900 1850
+$Comp
+L weigu:SIL1x2R J2
+U 1 1 61B7FB98
+P 1100 1550
+F 0 "J2" V 1036 1654 50  0000 L CNN
+F 1 "DDS_OUT" V 1127 1654 50  0000 L CNN
+F 2 "" H 1100 1550 60  0000 C CNN
+F 3 "" H 1100 1550 60  0000 C CNN
+	1    1100 1550
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1000 1850 1000 1650
+Wire Wire Line
+	1150 1850 1150 1650
+Text Notes 1100 1350 0    50   ~ 0
+PGA
+Text Notes 900  1350 0    50   ~ 0
+GND
+Wire Wire Line
+	1050 3050 1050 3600
+Wire Wire Line
+	1050 3600 2500 3600
+$Comp
+L weigu:SIL1x8L J6
+U 1 1 61B82B85
+P 9400 2550
+F 0 "J6" H 9600 3150 50  0000 L CNN
+F 1 "H_ADC_IO" H 9450 1850 50  0000 L CNN
+F 2 "" H 9400 2550 60  0000 C CNN
+F 3 "" H 9400 2550 60  0000 C CNN
+	1    9400 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:SIL1x6R J7
+U 1 1 61B851EB
+P 10600 2550
+F 0 "J7" H 10450 3050 50  0000 C CNN
+F 1 "H_ADC_I2C" H 10350 2000 50  0000 C CNN
+F 2 "" H 10600 3400 60  0000 C CNN
+F 3 "" H 10600 3400 60  0000 C CNN
+	1    10600 2550
+	1    0    0    -1  
+$EndComp
+Wire Notes Line
+	9350 3350 10600 3350
+Wire Notes Line
+	10600 3350 10600 1750
+Wire Notes Line
+	10600 1750 9350 1750
+Wire Notes Line
+	9350 1750 9350 3350
+Wire Wire Line
+	10750 2650 10650 2650
+Wire Wire Line
+	10800 2500 10650 2500
+NoConn ~ 10650 2800
+NoConn ~ 10650 2950
+Wire Wire Line
+	10650 2350 11000 2350
+Wire Wire Line
+	10650 2200 10800 2200
+$Comp
+L weigu:+5V #PWR08
+U 1 1 61B95B29
+P 10800 2200
+F 0 "#PWR08" H 10800 2050 50  0001 C CNN
+F 1 "+5V" H 10800 2381 50  0000 C CNN
+F 2 "" H 10800 2200 50  0001 C CNN
+F 3 "" H 10800 2200 50  0001 C CNN
+	1    10800 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:SIL1x2R J5
+U 1 1 61B96A98
+P 5050 1550
+F 0 "J5" V 4986 1654 50  0000 L CNN
+F 1 "ADC_IN" V 4950 1150 50  0000 L CNN
+F 2 "" H 5050 1550 60  0000 C CNN
+F 3 "" H 5050 1550 60  0000 C CNN
+	1    5050 1550
+	0    1    1    0   
+$EndComp
+$Comp
+L weigu:BAT48RL D1
+U 1 1 61BA0173
+P 6350 1600
+F 0 "D1" H 6350 1383 50  0000 C CNN
+F 1 "BAT48RL" H 6350 1474 50  0000 C CNN
+F 2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" H 6350 1425 50  0001 C CNN
+F 3 "www.st.com/resource/en/datasheet/bat48.pdf" H 6350 1600 50  0001 C CNN
+	1    6350 1600
+	-1   0    0    1   
+$EndComp
+$Comp
+L weigu:MAX4167 U2
+U 1 1 61B6B17B
+P 5700 2350
+F 0 "U2" H 6000 2250 60  0000 L CNN
+F 1 "MAX4167" H 5900 2150 60  0000 L CNN
+F 2 "" H 5700 2350 60  0000 C CNN
+F 3 "" H 5700 2350 60  0000 C CNN
+	1    5700 2350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 1650 5100 1950
+Wire Wire Line
+	6200 2350 6200 1600
+Wire Wire Line
+	6200 1600 5850 1600
+Wire Wire Line
+	5200 1600 5200 2250
+Wire Wire Line
+	4950 1650 4950 1750
+Wire Wire Line
+	4950 1750 4550 1750
+Connection ~ 4550 1750
+$Comp
+L weigu:+5V #PWR05
+U 1 1 61B739B2
+P 5600 1950
+F 0 "#PWR05" H 5600 1800 50  0001 C CNN
+F 1 "+5V" H 5600 2131 50  0000 C CNN
+F 2 "" H 5600 1950 50  0001 C CNN
+F 3 "" H 5600 1950 50  0001 C CNN
+	1    5600 1950
+	1    0    0    -1  
+$EndComp
+Connection ~ 6200 1600
+$Comp
+L weigu:C+ C1
+U 1 1 61B76C58
+P 6700 1900
+F 0 "C1" H 6750 2000 50  0000 L CNN
+F 1 "100µ" H 6500 1800 50  0000 L CNN
+F 2 "" H 6700 1870 60  0000 C CNN
+F 3 "" H 6700 1870 60  0000 C CNN
+	1    6700 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:C+ C2
+U 1 1 61B776A3
+P 6700 2300
+F 0 "C2" H 6750 2400 50  0000 L CNN
+F 1 "10µ" H 6750 2200 50  0000 L CNN
+F 2 "" H 6700 2270 60  0000 C CNN
+F 3 "" H 6700 2270 60  0000 C CNN
+	1    6700 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:C+ C3
+U 1 1 61B780B7
+P 6700 2700
+F 0 "C3" H 6750 2800 50  0000 L CNN
+F 1 "1µ" H 6750 2600 50  0000 L CNN
+F 2 "" H 6700 2670 60  0000 C CNN
+F 3 "" H 6700 2670 60  0000 C CNN
+	1    6700 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:C C4
+U 1 1 61B78D2C
+P 6700 3100
+F 0 "C4" H 6750 3200 50  0000 L CNN
+F 1 "100n" H 6750 3000 50  0000 L CNN
+F 2 "" H 6700 3070 60  0000 C CNN
+F 3 "" H 6700 3070 60  0000 C CNN
+	1    6700 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:C C?
+U 1 1 61B8F59B
+P 6700 3500
+F 0 "C?" H 6750 3600 50  0000 L CNN
+F 1 "10n" H 6750 3400 50  0000 L CNN
+F 2 "" H 6700 3470 60  0000 C CNN
+F 3 "" H 6700 3470 60  0000 C CNN
+	1    6700 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:C C?
+U 1 1 61B8FCD3
+P 6700 3900
+F 0 "C?" H 6750 4000 50  0000 L CNN
+F 1 "1n" H 6750 3800 50  0000 L CNN
+F 2 "" H 6700 3870 60  0000 C CNN
+F 3 "" H 6700 3870 60  0000 C CNN
+	1    6700 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:GND #PWR?
+U 1 1 61B983E2
+P 6700 4100
+F 0 "#PWR?" H 6550 4100 50  0001 C CNN
+F 1 "GND" H 6700 3797 50  0000 C CNN
+F 2 "" H 6700 4100 50  0001 C CNN
+F 3 "~" H 6700 4100 50  0001 C CNN
+	1    6700 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4350 3150 6500 3150
+Wire Wire Line
+	4350 2950 6500 2950
+Wire Wire Line
+	4350 2850 6450 2850
+Wire Wire Line
+	4350 2650 4600 2650
+Wire Wire Line
+	4600 2650 4600 2800
+Wire Wire Line
+	4600 2800 6400 2800
+Wire Wire Line
+	9100 2350 9300 2350
+Wire Wire Line
+	9300 2500 8900 2500
+Wire Wire Line
+	8900 2500 8900 1600
+Wire Wire Line
+	8900 1600 7300 1600
+Wire Wire Line
+	6700 1600 6700 1700
+Wire Wire Line
+	10750 2650 10750 5300
+Wire Wire Line
+	2450 5300 10750 5300
+Wire Wire Line
+	10800 2500 10800 5350
+Wire Wire Line
+	2400 5350 10800 5350
+Connection ~ 5600 1950
+$Comp
+L weigu:C C?
+U 1 1 61BC98CB
+P 5800 1950
+F 0 "C?" V 6000 1900 50  0000 L CNN
+F 1 "100n" V 5650 1900 50  0000 L CNN
+F 2 "" H 5800 1920 60  0000 C CNN
+F 3 "" H 5800 1920 60  0000 C CNN
+	1    5800 1950
+	0    1    1    0   
+$EndComp
+$Comp
+L weigu:GND #PWR?
+U 1 1 61BD314F
+P 6000 1950
+F 0 "#PWR?" H 5850 1950 50  0001 C CNN
+F 1 "GND" H 6000 1647 50  0000 C CNN
+F 2 "" H 6000 1950 50  0001 C CNN
+F 3 "~" H 6000 1950 50  0001 C CNN
+	1    6000 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:GND #PWR?
+U 1 1 61BEE1E4
+P 9100 3150
+F 0 "#PWR?" H 8950 3150 50  0001 C CNN
+F 1 "GND" H 9100 2847 50  0000 C CNN
+F 2 "" H 9100 3150 50  0001 C CNN
+F 3 "~" H 9100 3150 50  0001 C CNN
+	1    9100 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9100 2350 9100 3150
+Wire Wire Line
+	6400 2800 6400 2100
+Wire Wire Line
+	6400 2100 6700 2100
+Connection ~ 6700 2100
+Wire Wire Line
+	6450 2850 6450 2500
+Wire Wire Line
+	6450 2500 6700 2500
+Connection ~ 6700 2500
+Wire Wire Line
+	6500 2950 6500 2900
+Wire Wire Line
+	6500 2900 6700 2900
+Connection ~ 6700 2900
+Wire Wire Line
+	6500 3150 6500 3700
+Wire Wire Line
+	6500 3700 6700 3700
+Connection ~ 6700 3700
+Wire Wire Line
+	6550 3050 6550 3300
+Wire Wire Line
+	6550 3300 6700 3300
+Wire Wire Line
+	4350 3050 6550 3050
+Connection ~ 6700 3300
+$Comp
+L weigu:SIL1x8L J?
+U 1 1 61CB4A4C
+P 2250 1000
+F 0 "J?" V 2400 300 50  0000 C CNN
+F 1 "waveshare_ePaper_3.7\"" V 2350 2050 50  0000 C CNN
+F 2 "" H 2250 1000 60  0000 C CNN
+F 3 "" H 2250 1000 60  0000 C CNN
+	1    2250 1000
+	0    -1   -1   0   
+$EndComp
+Text Notes 1650 800  0    39   ~ 0
+BUSY
+Text Notes 2000 800  0    39   ~ 0
+MOSI
+Text Notes 2700 2450 0    50   ~ 0
+MOSI
+Text Notes 2700 2350 0    50   ~ 0
+SCK
+Text Notes 2700 2050 0    50   ~ 0
+MISO
+Text Notes 2700 2150 0    50   ~ 0
+CS
+Wire Wire Line
+	2500 2050 2950 2050
+Wire Wire Line
+	2500 2050 2500 3600
+Wire Wire Line
+	2950 2850 2550 2850
+Wire Wire Line
+	2550 2850 2550 1650
+Wire Wire Line
+	2550 1650 1750 1650
+Wire Wire Line
+	1750 1650 1750 1100
+Wire Wire Line
+	2950 2950 2600 2950
+Wire Wire Line
+	2600 2950 2600 1600
+Wire Wire Line
+	2600 1600 1900 1600
+Wire Wire Line
+	1900 1600 1900 1100
+Wire Wire Line
+	2950 1850 2900 1850
+Wire Wire Line
+	2900 1850 2900 1200
+Wire Wire Line
+	2900 1200 2650 1200
+Wire Wire Line
+	2650 1200 2650 1100
+Wire Wire Line
+	2850 1950 2850 1250
+Wire Wire Line
+	2850 1250 2500 1250
+Wire Wire Line
+	2500 1250 2500 1100
+Wire Wire Line
+	2850 1950 2950 1950
+Wire Wire Line
+	2300 2350 2300 1500
+Wire Wire Line
+	2300 1500 2200 1500
+Wire Wire Line
+	2200 1500 2200 1100
+Connection ~ 2300 2350
+Wire Wire Line
+	2050 1100 2050 1550
+Wire Wire Line
+	2050 1550 2350 1550
+Wire Wire Line
+	2350 1550 2350 2450
+Connection ~ 2350 2450
+$Comp
+L weigu:GND #PWR?
+U 1 1 61CC64DA
+P 2350 1100
+F 0 "#PWR?" H 2200 1100 50  0001 C CNN
+F 1 "GND" H 2350 797 50  0000 C CNN
+F 2 "" H 2350 1100 50  0001 C CNN
+F 3 "~" H 2350 1100 50  0001 C CNN
+	1    2350 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:+5V #PWR?
+U 1 1 61CC695B
+P 2900 1150
+F 0 "#PWR?" H 2900 1000 50  0001 C CNN
+F 1 "+5V" H 2900 1331 50  0000 C CNN
+F 2 "" H 2900 1150 50  0001 C CNN
+F 3 "" H 2900 1150 50  0001 C CNN
+	1    2900 1150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2900 1150 2800 1150
+Wire Wire Line
+	2800 1150 2800 1100
+Text Notes 1850 800  0    39   ~ 0
+RST
+Text Notes 2150 800  0    39   ~ 0
+SCK
+Text Notes 2300 800  0    39   ~ 0
+GND
+Text Notes 2600 800  0    39   ~ 0
+DC
+Text Notes 2450 800  0    39   ~ 0
+CS
+Text Notes 2750 800  0    39   ~ 0
+VSYS
+Wire Wire Line
+	2950 3150 2750 3150
+Wire Wire Line
+	2750 3150 2750 5200
+Wire Wire Line
+	2750 5200 7300 5200
+Wire Wire Line
+	7300 5200 7300 1600
+Connection ~ 7300 1600
+Wire Wire Line
+	7300 1600 6700 1600
+$Comp
+L weigu:ICL7660 U?
+U 1 1 61CF0C60
+P 3650 4300
+F 0 "U?" H 3650 4867 50  0000 C CNN
+F 1 "ICL7660" H 3650 4776 50  0000 C CNN
+F 2 "" H 3750 4200 50  0001 C CNN
+F 3 "http://datasheets.maximintegrated.com/en/ds/ICL7660-MAX1044.pdf" H 3750 4200 50  0001 C CNN
+	1    3650 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:GND #PWR?
+U 1 1 61D036A7
+P 3650 4850
+F 0 "#PWR?" H 3500 4850 50  0001 C CNN
+F 1 "GND" H 3650 4547 50  0000 C CNN
+F 2 "" H 3650 4850 50  0001 C CNN
+F 3 "~" H 3650 4850 50  0001 C CNN
+	1    3650 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L weigu:+5V #PWR?
+U 1 1 61D06CA8
+P 3100 4000
+F 0 "#PWR?" H 3100 3850 50  0001 C CNN
+F 1 "+5V" H 3100 4181 50  0000 C CNN
+F 2 "" H 3100 4000 50  0001 C CNN
+F 3 "" H 3100 4000 50  0001 C CNN
+	1    3100 4000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3100 4000 3250 4000
+$Comp
+L weigu:C+ C?
+U 1 1 61D0A5C7
+P 4400 4400
+F 0 "C?" H 4528 4446 50  0000 L CNN
+F 1 "10µ" H 4528 4355 50  0000 L CNN
+F 2 "" H 4400 4370 60  0000 C CNN
+F 3 "" H 4400 4370 60  0000 C CNN
+	1    4400 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4050 4200 4400 4200
+Wire Wire Line
+	4050 4600 4400 4600
+$Comp
+L weigu:C+ C?
+U 1 1 61D1064F
+P 5600 4400
+F 0 "C?" H 5728 4446 50  0000 L CNN
+F 1 "10µ" H 5728 4355 50  0000 L CNN
+F 2 "" H 5600 4370 60  0000 C CNN
+F 3 "" H 5600 4370 60  0000 C CNN
+	1    5600 4400
+	1    0    0    -1  
+$EndComp
+NoConn ~ 3250 4300
+NoConn ~ 3250 4500
+Wire Wire Line
+	4050 4000 4750 4000
+Wire Wire Line
+	5600 4000 5600 4200
+Connection ~ 5600 4000
+Wire Wire Line
+	5600 2750 5600 4000
+$Comp
+L weigu:R R?
+U 1 1 61D27A70
+P 5650 1600
+F 0 "R?" H 5650 1700 50  0000 C CNN
+F 1 "10k" H 5650 1600 50  0000 C CNN
+F 2 "" V 5580 1600 30  0001 C CNN
+F 3 "" H 5650 1600 30  0001 C CNN
+	1    5650 1600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 1600 5200 1600
+$Comp
+L weigu:R R?
+U 1 1 61D2838E
+P 5000 2450
+F 0 "R?" H 5000 2350 50  0000 C CNN
+F 1 "10k" H 5000 2450 50  0000 C CNN
+F 2 "" V 4930 2450 30  0001 C CNN
+F 3 "" H 5000 2450 30  0001 C CNN
+	1    5000 2450
+	-1   0    0    1   
+$EndComp
+$Comp
+L weigu:R R?
+U 1 1 61D28C8E
+P 5000 2650
+F 0 "R?" H 5000 2550 50  0000 C CNN
+F 1 "10k" H 5000 2650 50  0000 C CNN
+F 2 "" V 4930 2650 30  0001 C CNN
+F 3 "" H 5000 2650 30  0001 C CNN
+	1    5000 2650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5200 2450 5200 2650
+Connection ~ 5200 2450
+Wire Wire Line
+	4800 2650 4800 3600
+Wire Wire Line
+	4800 2450 4800 1950
+Wire Wire Line
+	4800 1950 5100 1950
+Wire Wire Line
+	6500 1600 6700 1600
+Connection ~ 6700 1600
+$Comp
+L weigu:R R?
+U 1 1 61D690E7
+P 4750 4200
+F 0 "R?" V 4704 4268 50  0000 L CNN
+F 1 "1k" H 4700 4200 50  0000 L CNN
+F 2 "" V 4680 4200 30  0001 C CNN
+F 3 "" H 4750 4200 30  0001 C CNN
+	1    4750 4200
+	0    1    1    0   
+$EndComp
+Connection ~ 4750 4000
+Wire Wire Line
+	4750 4000 5600 4000
+$Comp
+L weigu:LED D?
+U 1 1 61D69D56
+P 4750 4650
+F 0 "D?" V 4796 4573 50  0000 R CNN
+F 1 "LED" V 4705 4573 50  0000 R CNN
+F 2 "" H 4750 4650 60  0000 C CNN
+F 3 "" H 4750 4650 60  0000 C CNN
+	1    4750 4650
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3650 4850 3650 4800
+Connection ~ 3650 4850
+Wire Wire Line
+	3650 4850 4750 4850
+Wire Wire Line
+	4750 4850 5050 4850
+Wire Wire Line
+	5600 4850 5600 4600
+Connection ~ 4750 4850
+Wire Wire Line
+	4750 4450 4750 4400
+$Comp
+L weigu:Poti RV?
+U 1 1 61D7F81E
+P 5050 4650
+F 0 "RV?" V 5096 4894 50  0000 L CNN
+F 1 "10k" V 5005 4894 50  0000 L CNN
+F 2 "" V 4980 4650 30  0000 C CNN
+F 3 "" H 5050 4650 30  0000 C CNN
+	1    5050 4650
+	0    1    -1   0   
+$EndComp
+Connection ~ 5050 4850
+Wire Wire Line
+	5050 4850 5600 4850
+Wire Wire Line
+	5050 4450 4750 4450
+Connection ~ 4750 4450
+Wire Wire Line
+	5250 4450 5250 3600
+Wire Wire Line
+	5250 3600 4800 3600
+$EndSCHEMATC
