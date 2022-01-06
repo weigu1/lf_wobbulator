@@ -110,20 +110,22 @@ class AD9833():
         self.pot_cs.high()
         self.spi.init(phase = 0), # reset phase to zero
 
-### MAIN #####################################################################
-
-CRYSTAL_FREQ = 25000000  # Crystal frequency in Hz
-# SPI and POT
-PIN_DDS_CS = 5
-PIN_SCK = 6
-PIN_MOSI = 7
-PIN_POT_CS = 4
-POT_VALUE = 80 # max = 180, depends on board! set below calibration value
-
-def main():
+##############################################################################
+        
+def create_default_wave():
+    CRYSTAL_FREQ = 25000000  # Crystal frequency in Hz
+    # SPI and POT
+    PIN_DDS_CS = 5
+    PIN_SCK = 6
+    PIN_MOSI = 7
+    PIN_POT_CS = 4
+    POT_VALUE = 80 # max = 180, depends on board! set below calibration value
     wave = AD9833(CRYSTAL_FREQ, PIN_DDS_CS, PIN_SCK, PIN_MOSI, PIN_POT_CS, POT_VALUE)
     #wave.change_function(wave.SINE)
     wave.change_freq(1000)
+    return wave
 
-if __name__ == '__main__':
-    main()
+##############################################################################
+
+if __name__ == '__main__':    
+    wave = create_default_wave()    
