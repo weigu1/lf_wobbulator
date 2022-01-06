@@ -39,7 +39,7 @@
 
 __version__ = "0.0.1"
 __author__ = "Guy WEILER weigu.lu"
-__copyright__ = "Copyright 2021, weigu.lu"
+__copyright__ = "Copyright 2022, weigu.lu"
 __credits__ = ["Guy WEILER", "Jean-Claude FELTES"]
 __license__ = "GPL"
 __maintainer__ = "Guy WEILER"
@@ -60,20 +60,6 @@ RST_PIN         = 11
 BUSY_PIN        = 10
 
 HEADER = "lf-wobbulator by Guy WEILER and Jean-Claude FELTES"
-
-EPD_3IN7_lut_4Gray_GC =[
-0x2A,0x06,0x15,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#1
-0x28,0x06,0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#2
-0x20,0x06,0x10,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#3
-0x14,0x06,0x28,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#4
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#5
-0x00,0x02,0x02,0x0A,0x00,0x00,0x00,0x08,0x08,0x02,#6
-0x00,0x02,0x02,0x0A,0x00,0x00,0x00,0x00,0x00,0x00,#7
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#8
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#9
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#10
-0x22,0x22,0x22,0x22,0x22
-]
 
 EPD_3IN7_lut_1Gray_GC =[
 0x2A,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#1
@@ -103,19 +89,7 @@ EPD_3IN7_lut_1Gray_DU =[
 0x22,0x22,0x22,0x22,0x22
 ]
 
-EPD_3IN7_lut_1Gray_A2 =[
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#1
-0x0A,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#2
-0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#3
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#4
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#5
-0x00,0x00,0x03,0x05,0x00,0x00,0x00,0x00,0x00,0x00,#6
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#7
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#8
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#9
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#10
-0x22,0x22,0x22,0x22,0x22
-]
+
 
 class EPD_3in7:
     def __init__(self):
@@ -125,28 +99,36 @@ class EPD_3in7:
         self.width = EPD_WIDTH
         self.height = EPD_HEIGHT
         
-        self.lut_4Gray_GC = EPD_3IN7_lut_4Gray_GC
+        #self.lut_4Gray_GC = EPD_3IN7_lut_4Gray_GC
         self.lut_1Gray_GC = EPD_3IN7_lut_1Gray_GC
         self.lut_1Gray_DU = EPD_3IN7_lut_1Gray_DU
-        self.lut_1Gray_A2 = EPD_3IN7_lut_1Gray_A2
+        #self.lut_1Gray_A2 = EPD_3IN7_lut_1Gray_A2
         
-        self.black = 0x00
+        self.b = 0
+        self.w = 1
+        self.black = 0x00        
         self.white = 0xff
         self.darkgray = 0xaa
         self.grayish = 0x55
         
-        self.spi = SPI(0)
-        self.spi.init(baudrate=1_000_000)
-        self.dc_pin = Pin(DC_PIN, Pin.OUT)
+        self.spi = SPI(0,
+                  baudrate = 4_000_000,
+                  polarity = 1,
+                  phase = 1,
+                  bits = 8,
+                 )        
+        self.dc_pin = Pin(DC_PIN, Pin.OUT)        
 
         self.buffer_1Gray = bytearray(self.height * self.width // 8)
-        self.buffer_4Gray = bytearray(self.height * self.width // 4)
+        #self.buffer_4Gray = bytearray(self.height * self.width // 4)
         self.image1Gray = framebuf.FrameBuffer(self.buffer_1Gray, self.width, self.height, framebuf.MONO_HLSB)
-        self.image4Gray = framebuf.FrameBuffer(self.buffer_4Gray, self.width, self.height, framebuf.GS2_HMSB)
+        #self.image4Gray = framebuf.FrameBuffer(self.buffer_4Gray, self.width, self.height, framebuf.GS2_HMSB)
         
-        self.EPD_3IN7_4Gray_init()
-        self.EPD_3IN7_4Gray_Clear()
-        utime.sleep_ms(500)
+        #self.EPD_3IN7_4Gray_init()
+        #self.EPD_3IN7_4Gray_Clear()
+        self.EPD_3IN7_1Gray_init()
+        self.EPD_3IN7_1Gray_Clear()
+        utime.sleep_ms(500)        
         
     def width(self):
         return EPD_WIDTH
@@ -192,10 +174,15 @@ class EPD_3in7:
         
     def ReadBusy(self):
         print("e-Paper busy")
-        while(self.digital_read(self.busy_pin) == 1):      #  0: idle, 1: busy
-            self.delay_ms(10)
-        self.delay_ms(200) 
-        print("e-Paper busy release")
+        timeout = 0;
+        while(self.digital_read(self.busy_pin) == 1 and timeout < 100):      #  0: idle, 1: busy
+            self.delay_ms(100)
+            timeout+=1
+        self.delay_ms(200)
+        if timeout >= 100:
+            print("busy release because timeout reached")
+        else:     
+            print("e-Paper busy release")
         
     def Load_LUT(self,lut):
         self.send_command(0x32)
@@ -211,78 +198,6 @@ class EPD_3in7:
             else:
                 print("There is no such lut ")
         
-    def EPD_3IN7_4Gray_init(self):
-    
-        self.reset()              # SWRESET
-
-        self.send_command(0x12)
-        self.delay_ms(300)   
-
-        self.send_command(0x46)
-        self.send_data(0xF7)
-        self.ReadBusy()
-        self.send_command(0x47)
-        self.send_data(0xF7)
-        self.ReadBusy()
-        
-        self.send_command(0x01)   # setting gaet number
-        self.send_data(0xDF)
-        self.send_data(0x01)
-        self.send_data(0x00)
-
-        self.send_command(0x03)   # set gate voltage
-        self.send_data(0x00)
-
-        self.send_command(0x04)   # set source voltage
-        self.send_data(0x41)
-        self.send_data(0xA8)
-        self.send_data(0x32)
-
-        self.send_command(0x11)   # set data entry sequence
-        self.send_data(0x03)
-
-        self.send_command(0x3C)   # set border 
-        self.send_data(0x03)
-
-        self.send_command(0x0C)   # set booster strength
-        self.send_data(0xAE)
-        self.send_data(0xC7)
-        self.send_data(0xC3)
-        self.send_data(0xC0)
-        self.send_data(0xC0)  
-
-        self.send_command(0x18)   # set internal sensor on
-        self.send_data(0x80)
-         
-        self.send_command(0x2C)   # set vcom value
-        self.send_data(0x44)
-
-        self.send_command(0x37)   # set display option, these setting turn on previous function
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0x00) 
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0x00) 
-
-        self.send_command(0x44)   # setting X direction start/end position of RAM
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0x17)
-        self.send_data(0x01)
-
-        self.send_command(0x45)   # setting Y direction start/end position of RAM
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data(0xDF)
-        self.send_data(0x01)
-
-        self.send_command(0x22)   # Display Update Control 2
-        self.send_data(0xCF)
 
     def EPD_3IN7_1Gray_init(self):
         self.reset()
@@ -356,47 +271,6 @@ class EPD_3in7:
         self.send_command(0x22)   # Display Update Control 2
         self.send_data(0xCF)
         
-    def EPD_3IN7_4Gray_Clear(self):    
-        high = self.height
-        if( self.width % 8 == 0) :
-            wide =  self.width // 8
-        else :
-            wide =  self.width // 8 + 1
-
-        self.send_command(0x49)
-        self.send_data(0x00)
-        self.send_command(0x4E)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_command(0x4F)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        
-        self.send_command(0x24)
-        for j in range(0, high):
-            for i in range(0, wide):
-                self.send_data(0Xff)
-        
-        self.send_command(0x4E)
-        self.send_data(0x00)
-        self.send_data(0x00)
-         
-        self.send_command(0x4F)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        
-        self.send_command(0x26)
-        for j in range(0, high):
-            for i in range(0, wide):
-                self.send_data(0Xff)
-          
-        self.Load_LUT(0)
-        self.send_command(0x22)
-        self.send_data(0xC7)
-
-        self.send_command(0x20)
-        self.ReadBusy()    
-        
     def EPD_3IN7_1Gray_Clear(self):
         
         high = self.height
@@ -423,7 +297,286 @@ class EPD_3in7:
         self.send_command(0x20)
         self.ReadBusy()
         
-    def EPD_3IN7_4Gray_Display(self,Image):
+    def EPD_3IN7_1Gray_Display(self,Image):
+        
+        high = self.height
+        if( self.width % 8 == 0) :
+            wide =  self.width // 8
+        else :
+            wide =  self.width // 8 + 1
+
+        self.send_command(0x49)
+        self.send_data(0x00)
+        
+        self.send_command(0x4E)
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_command(0x4F)
+        self.send_data(0x00)
+        self.send_data(0x00)
+
+        self.send_command(0x24)
+        for j in range(0, high):
+            for i in range(0, wide):
+                self.send_data(Image[i + j * wide])
+        
+
+        self.Load_LUT(1)
+        
+        self.send_command(0x20)
+        self.ReadBusy()
+        
+    def EPD_3IN7_1Gray_Display_Part(self,Image):
+        
+        high = self.height
+        if( self.width % 8 == 0) :
+            wide =  self.width // 8
+        else :
+            wide =  self.width // 8 + 1
+
+        self.send_command(0x44)
+        self.send_data(0x00)
+        self.send_data(0x00)        
+        self.send_data((self.width-1) & 0xff)
+        self.send_data(((self.width-1)>>8) & 0x03)
+        self.send_command(0x45)
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data((self.height-1) & 0xff)
+        self.send_data(((self.height-1)>>8) & 0x03)
+
+        self.send_command(0x4E)   # SET_RAM_X_ADDRESS_COUNTER
+        self.send_data(0x00)
+        self.send_data(0x00)
+
+        self.send_command(0x4F)   # SET_RAM_Y_ADDRESS_COUNTER
+        self.send_data(0x00)
+        self.send_data(0x00)
+        
+        self.send_command(0x24)
+        for j in range(0, high):
+            for i in range(0, wide):
+                self.send_data(Image[i + j * wide])
+
+        self.Load_LUT(2)
+        self.send_command(0x20)
+        self.ReadBusy()        
+        
+    def Sleep(self):
+        self.send_command(0X50)
+        self.send_data(0xf7)
+        self.send_command(0X02)  # power off
+        self.send_command(0X07)  # deep sleep
+        self.send_data(0xA5)
+        
+    ###  more functions ###
+
+    def rotate_landscape_2_portrait(self, h, w, buf_landscape, buf_portrait):
+        # Move frame buffer bytes to e-paper buffer to match e-paper
+        # bytes oranisation. That is landscape mode to portrait mode.
+        x=0; y=-1; n=0; m=0
+        #x=0; y=0; n=1; m=0
+        for i in range(0, w//8): # width/8
+            for j in range(0, h): # height
+                m = (n-x)+(n-y)*(w//8-1)
+                buf_portrait[m] = buf_landscape[n]
+                n +=1
+            x = n+i+1
+            y = n-1
+        return buf_portrait    
+
+    def header(self, x, y, header, fb_ls_b, b, w):
+        '''Print the header line (white on black rectangle)'''
+        margin_h = 4
+        margin_v = 2
+        fb_ls_b.fill_rect(x, y, (len(header)*8)+(2*margin_h), 2*margin_v+8, b)
+        fb_ls_b.text(header, margin_h+x, margin_v, w)
+        
+    def axes(self, x_zero, y_zero, fb_ls_b, b, w):
+        x_axes_margin_right = 0
+        y_axes_margin_top = 10
+        x_length = EPD_HEIGHT-x_zero -x_axes_margin_right #Lansdscape!
+        y_length = EPD_WIDTH-(EPD_WIDTH-y_zero)-y_axes_margin_top
+        y_end = y_zero-y_length
+        x_end = x_zero+x_length
+        # double lines for axes
+        fb_ls_b.vline(x_zero, y_end, y_length, b)
+        fb_ls_b.vline(x_zero-1, y_end, y_length+1, b)
+        fb_ls_b.hline(x_zero, y_zero, x_length, b)
+        fb_ls_b.hline(x_zero-1, y_zero+1, x_length+1, b)
+        # vertical axes ticklines
+        vtick_dist = 75 # = vtick text distance        
+        vaxes_last_tick_offset = 15
+        y_tick_end = y_end + vaxes_last_tick_offset        
+        for i in range(0,3):
+            fb_ls_b.hline(x_zero-3,i*vtick_dist+y_tick_end, 6, b)
+        # vertical axes ticks text        
+        vtick_txt_voffset = -3 # offset txt to ticks to align in the middle       
+        for i in range(0,3):
+            if i != 0:
+                fb_ls_b.text("-", 0, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
+                fb_ls_b.text(str(i), 8, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
+            fb_ls_b.text("0", 16, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
+        # vertical axes arrow
+        fb_ls_b.line(x_zero-1-2,y_end+10,x_zero-1,y_end, b)
+        fb_ls_b.line(x_zero-1+3,y_end+10,x_zero-1+1,y_end, b)
+        fb_ls_b.line(x_zero-1-1,y_end+10,x_zero-1,y_end, b)
+        fb_ls_b.line(x_zero-1+2,y_end+10,x_zero-1+1,y_end, b)
+        # vertical axes label
+        fb_ls_b.text("G/dB", 0, 0, b)
+        # horizontal axes ticklines
+        htick_dist = 73
+        htick_offset = x_zero
+        for i in range(0,7):
+            fb_ls_b.vline(i*htick_dist+htick_offset, y_zero-2, 6, b)
+        # horizontal axes arrow
+        fb_ls_b.line(x_end-10,y_zero-2,x_end,y_zero, b)
+        fb_ls_b.line(x_end-10,y_zero+3,x_end,y_zero+1, b)
+        fb_ls_b.line(x_end-10,y_zero-1,x_end,y_zero, b)
+        fb_ls_b.line(x_end-10,y_zero+2,x_end,y_zero+1, b)
+        # horizontal axes ticks text
+        htick_txt_dist = htick_dist
+        htick_txt_offset_1 = htick_offset-12
+        htick_txt_offset_2 = htick_txt_offset_1+16 # exp
+        for i in range(0,7):    
+            fb_ls_b.text(str(i), i*htick_txt_dist+htick_txt_offset_2, y_zero+10, b)
+            fb_ls_b.text("10", i*htick_txt_dist+htick_txt_offset_1, y_zero+15, b)
+        # horizontal axes label
+        fb_ls_b.text("f/Hz", 240, 272, b)       
+
+### MAIN #####################################################################
+
+def main():  
+    ''' We get no direct possibility to change the orientation.
+        So it is necessary to use the framebuffer an copy pixel by pixel
+        from one buffer to another. We use here only black and white'''
+        
+    epd = EPD_3in7()    
+    b = 0 # for framebuffer
+    w = 1
+
+    buf_ls_b       = bytearray(epd.height * epd.width // 8) # used by frame buffer (landscape)
+    buf_epaper_p_b = bytearray(epd.height * epd.width // 8) # used on e-paper after calc. to match e-paper (portrait)
+
+    fb_ls_b = framebuf.FrameBuffer(buf_ls_b, epd.height, epd.width, framebuf.MONO_VLSB)
+    fb_ls_b.fill(w)    
+    epd.header(55, 0, HEADER, fb_ls_b, b, w)    
+    x_axes_zero = 28
+    y_axes_zero = 245
+    epd.axes(x_axes_zero, y_axes_zero, fb_ls_b, b, w)
+    print('Sending to display')
+    buf_epaper_p_b = epd.rotate_landscape_2_portrait(epd.height, epd.width, buf_ls_b, buf_epaper_p_b)
+    epd.EPD_3IN7_1Gray_Display(buf_epaper_p_b)
+    print('Done!.......')    
+    #epd.Sleep()    
+
+if __name__=='__main__':
+    main()
+
+
+
+'''EPD_3IN7_lut_4Gray_GC =[
+0x2A,0x06,0x15,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#1
+0x28,0x06,0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#2
+0x20,0x06,0x10,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#3
+0x14,0x06,0x28,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#4
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#5
+0x00,0x02,0x02,0x0A,0x00,0x00,0x00,0x08,0x08,0x02,#6
+0x00,0x02,0x02,0x0A,0x00,0x00,0x00,0x00,0x00,0x00,#7
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#8
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#9
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#10
+0x22,0x22,0x22,0x22,0x22
+]
+
+EPD_3IN7_lut_1Gray_A2 =[
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#1
+0x0A,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#2
+0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#3
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#4
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#5
+0x00,0x00,0x03,0x05,0x00,0x00,0x00,0x00,0x00,0x00,#6
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#7
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#8
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#9
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#10
+0x22,0x22,0x22,0x22,0x22
+]
+'''
+'''    def EPD_3IN7_4Gray_init(self):
+    
+        self.reset()              # SWRESET
+
+        self.send_command(0x12)
+        self.delay_ms(300)   
+
+        self.send_command(0x46)
+        self.send_data(0xF7)
+        self.ReadBusy()
+        self.send_command(0x47)
+        self.send_data(0xF7)
+        self.ReadBusy()
+        
+        self.send_command(0x01)   # setting gaet number
+        self.send_data(0xDF)
+        self.send_data(0x01)
+        self.send_data(0x00)
+
+        self.send_command(0x03)   # set gate voltage
+        self.send_data(0x00)
+
+        self.send_command(0x04)   # set source voltage
+        self.send_data(0x41)
+        self.send_data(0xA8)
+        self.send_data(0x32)
+
+        self.send_command(0x11)   # set data entry sequence
+        self.send_data(0x03)
+
+        self.send_command(0x3C)   # set border 
+        self.send_data(0x03)
+
+        self.send_command(0x0C)   # set booster strength
+        self.send_data(0xAE)
+        self.send_data(0xC7)
+        self.send_data(0xC3)
+        self.send_data(0xC0)
+        self.send_data(0xC0)  
+
+        self.send_command(0x18)   # set internal sensor on
+        self.send_data(0x80)
+         
+        self.send_command(0x2C)   # set vcom value
+        self.send_data(0x44)
+
+        self.send_command(0x37)   # set display option, these setting turn on previous function
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0x00) 
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0x00) 
+
+        self.send_command(0x44)   # setting X direction start/end position of RAM
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0x17)
+        self.send_data(0x01)
+
+        self.send_command(0x45)   # setting Y direction start/end position of RAM
+        self.send_data(0x00)
+        self.send_data(0x00)
+        self.send_data(0xDF)
+        self.send_data(0x01)
+
+        self.send_command(0x22)   # Display Update Control 2
+        self.send_data(0xCF)
+'''
+'''    def EPD_3IN7_4Gray_Display(self,Image):
         
         self.send_command(0x49)
         self.send_data(0x00)
@@ -525,9 +678,9 @@ class EPD_3in7:
         self.send_command(0x20)
         
         self.ReadBusy()
-        
-    def EPD_3IN7_1Gray_Display(self,Image):
-        
+'''        
+
+'''    def EPD_3IN7_4Gray_Clear(self):    
         high = self.height
         if( self.width % 8 == 0) :
             wide =  self.width // 8
@@ -536,172 +689,38 @@ class EPD_3in7:
 
         self.send_command(0x49)
         self.send_data(0x00)
-        
         self.send_command(0x4E)
         self.send_data(0x00)
         self.send_data(0x00)
         self.send_command(0x4F)
         self.send_data(0x00)
         self.send_data(0x00)
-
-        self.send_command(0x24)
-        for j in range(0, high):
-            for i in range(0, wide):
-                self.send_data(Image[i + j * wide])
-        
-
-        self.Load_LUT(1)
-        
-        self.send_command(0x20)
-        self.ReadBusy()
-        
-    def EPD_3IN7_1Gray_Display_Part(self,Image):
-        
-        high = self.height
-        if( self.width % 8 == 0) :
-            wide =  self.width // 8
-        else :
-            wide =  self.width // 8 + 1
-
-        self.send_command(0x44)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data((self.width-1) & 0xff)
-        self.send_data(((self.width-1)>>8) & 0x03)
-        self.send_command(0x45)
-        self.send_data(0x00)
-        self.send_data(0x00)
-        self.send_data((self.height-1) & 0xff)
-        self.send_data(((self.height-1)>>8) & 0x03)
-
-        self.send_command(0x4E)   # SET_RAM_X_ADDRESS_COUNTER
-        self.send_data(0x00)
-        self.send_data(0x00)
-
-        self.send_command(0x4F)   # SET_RAM_Y_ADDRESS_COUNTER
-        self.send_data(0x00)
-        self.send_data(0x00)
         
         self.send_command(0x24)
         for j in range(0, high):
             for i in range(0, wide):
-                self.send_data(Image[i + j * wide])
+                self.send_data(0Xff)
+        
+        self.send_command(0x4E)
+        self.send_data(0x00)
+        self.send_data(0x00)
+         
+        self.send_command(0x4F)
+        self.send_data(0x00)
+        self.send_data(0x00)
+        
+        self.send_command(0x26)
+        for j in range(0, high):
+            for i in range(0, wide):
+                self.send_data(0Xff)
+          
+        self.Load_LUT(0)
+        self.send_command(0x22)
+        self.send_data(0xC7)
 
-        self.Load_LUT(2)
         self.send_command(0x20)
-        self.ReadBusy()
-        
-    def Sleep(self):
-        self.send_command(0X50)
-        self.send_data(0xf7)
-        self.send_command(0X02)  # power off
-        self.send_command(0X07)  # deep sleep
-        self.send_data(0xA5)
-        
-    ###  more functions ###
-
-    def rotate_landscape_2_portrait(self, h, w, buf_landscape, buf_portrait):
-        # Move frame buffer bytes to e-paper buffer to match e-paper
-        # bytes oranisation. That is landscape mode to portrait mode.
-        x=0; y=-1; n=0; m=0
-        #x=0; y=0; n=1; m=0
-        for i in range(0, w//8): # width/8
-            for j in range(0, h): # height
-                m = (n-x)+(n-y)*(w//8-1)
-                buf_portrait[m] = buf_landscape[n]
-                n +=1
-            x = n+i+1
-            y = n-1
-        return buf_portrait    
-
-    def header(self, x, y, header, fb_ls_b, b, w):
-        '''Print the header line (white on black rectangle)'''
-        margin_h = 4
-        margin_v = 2
-        fb_ls_b.fill_rect(x, y, (len(header)*8)+(2*margin_h), 2*margin_v+8, b)
-        fb_ls_b.text(header, margin_h+x, margin_v, w)
-        
-    def axes(self, x_zero, y_zero, fb_ls_b, b, w):
-        x_axes_margin_right = 0
-        y_axes_margin_top = 10
-        x_length = EPD_HEIGHT-x_zero -x_axes_margin_right #Lansdscape!
-        y_length = EPD_WIDTH-(EPD_WIDTH-y_zero)-y_axes_margin_top
-        y_end = y_zero-y_length
-        x_end = x_zero+x_length
-        # double lines for axes
-        fb_ls_b.vline(x_zero, y_end, y_length, b)
-        fb_ls_b.vline(x_zero-1, y_end, y_length+1, b)
-        fb_ls_b.hline(x_zero, y_zero, x_length, b)
-        fb_ls_b.hline(x_zero-1, y_zero+1, x_length+1, b)
-        # vertical axes ticklines
-        vtick_dist = 75 # = vtick text distance        
-        vaxes_last_tick_offset = 15
-        y_tick_end = y_end + vaxes_last_tick_offset        
-        for i in range(0,3):
-            fb_ls_b.hline(x_zero-3,i*vtick_dist+y_tick_end, 6, b)
-        # vertical axes ticks text        
-        vtick_txt_voffset = -3 # offset txt to ticks to align in the middle       
-        for i in range(0,3):
-            if i != 0:
-                fb_ls_b.text("-", 0, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
-                fb_ls_b.text(str(i), 8, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
-            fb_ls_b.text("0", 16, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
-        # vertical axes arrow
-        fb_ls_b.line(x_zero-1-2,y_end+10,x_zero-1,y_end, b)
-        fb_ls_b.line(x_zero-1+3,y_end+10,x_zero-1+1,y_end, b)
-        fb_ls_b.line(x_zero-1-1,y_end+10,x_zero-1,y_end, b)
-        fb_ls_b.line(x_zero-1+2,y_end+10,x_zero-1+1,y_end, b)
-        # vertical axes label
-        fb_ls_b.text("G/dB", 0, 0, b)
-        # horizontal axes ticklines
-        htick_dist = 73
-        htick_offset = x_zero
-        for i in range(0,7):
-            fb_ls_b.vline(i*htick_dist+htick_offset, y_zero-2, 6, b)
-        # horizontal axes arrow
-        fb_ls_b.line(x_end-10,y_zero-2,x_end,y_zero, b)
-        fb_ls_b.line(x_end-10,y_zero+3,x_end,y_zero+1, b)
-        fb_ls_b.line(x_end-10,y_zero-1,x_end,y_zero, b)
-        fb_ls_b.line(x_end-10,y_zero+2,x_end,y_zero+1, b)
-        # horizontal axes ticks text
-        htick_txt_dist = htick_dist
-        htick_txt_offset_1 = htick_offset-12
-        htick_txt_offset_2 = htick_txt_offset_1+16 # exp
-        for i in range(0,7):    
-            fb_ls_b.text(str(i), i*htick_txt_dist+htick_txt_offset_2, y_zero+10, b)
-            fb_ls_b.text("10", i*htick_txt_dist+htick_txt_offset_1, y_zero+15, b)
-        # horizontal axes label
-        fb_ls_b.text("f/Hz", 240, 272, b)       
-
-### MAIN #####################################################################
-        
-def main():  
-    ''' We get no direct possibility to change the orientation.
-        So it is necessary to use the framebuffer an copy pixel by pixel
-        from one buffer to another. We use here only black and white'''
-        
-    epd = EPD_3in7()
-    b = 0 # for framebuffer
-    w = 1
-
-    buf_ls_b       = bytearray(epd.height * epd.width // 8) # used by frame buffer (landscape)
-    buf_epaper_p_b = bytearray(epd.height * epd.width // 8) # used on e-paper after calc. to match e-paper (portrait)
-
-    fb_ls_b = framebuf.FrameBuffer(buf_ls_b, epd.height, epd.width, framebuf.MONO_VLSB)
-    fb_ls_b.fill(w)    
-    epd.header(55, 0, HEADER, fb_ls_b, b, w)    
-    x_axes_zero = 28
-    y_axes_zero = 245
-    epd.axes(x_axes_zero, y_axes_zero, fb_ls_b, b, w)
-    print('Sending to display')
-    buf_epaper_p_b = epd.rotate_landscape_2_portrait(epd.height, epd.width, buf_ls_b, buf_epaper_p_b)
-    epd.EPD_3IN7_1Gray_Display(buf_epaper_p_b)
-    print('Done!.......')    
-    epd.Sleep()    
-
-if __name__=='__main__':
-    main()
-    
+        self.ReadBusy()    
+'''        
 
 '''    epd.image1Gray.fill(0xff)
     epd.image4Gray.fill(0xff)

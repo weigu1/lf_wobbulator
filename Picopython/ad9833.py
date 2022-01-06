@@ -18,13 +18,15 @@
 
 __version__ = "0.2.0"
 __author__ = "Guy WEILER weigu.lu"
-__copyright__ = "Copyright 2021, weigu.lu"
+__copyright__ = "Copyright 2022, weigu.lu"
 __credits__ = ["Guy WEILER", "Jean-Claude FELTES"]
 __license__ = "GPL"
 __maintainer__ = "Guy WEILER"
 __email__ = "weigu@weigu.lu"
 __status__ = "Development" # "Prototype", "Development", or "Production"
 
+from machine import Pin, SPI
+from time import sleep
 
 class AD9833():
     """A class to interface an AD9833 DDS chip.
@@ -106,22 +108,22 @@ class AD9833():
         self.pot_cs.low()
         self.spi.write(bytes([0x11,pot_value]))
         self.pot_cs.high()
-        self.spi.init(phase = 0), # reset phase to zero        
+        self.spi.init(phase = 0), # reset phase to zero
 
-# ---------------------------------------------------------
-if __name__ == '__main__':
+### MAIN #####################################################################
 
-    from machine import Pin, SPI
-    from time import sleep
-    
-    CRYSTAL_FREQ = 25000000  # Crystal frequency in Hz
-    # SPI and POT
-    PIN_DDS_CS = 5
-    PIN_SCK = 6
-    PIN_MOSI = 7
-    PIN_POT_CS = 4
-    POT_VALUE = 30 # max = 180, depends on board! set below calibration value
-   
+CRYSTAL_FREQ = 25000000  # Crystal frequency in Hz
+# SPI and POT
+PIN_DDS_CS = 5
+PIN_SCK = 6
+PIN_MOSI = 7
+PIN_POT_CS = 4
+POT_VALUE = 80 # max = 180, depends on board! set below calibration value
+
+def main():
     wave = AD9833(CRYSTAL_FREQ, PIN_DDS_CS, PIN_SCK, PIN_MOSI, PIN_POT_CS, POT_VALUE)
     #wave.change_function(wave.SINE)
     wave.change_freq(1000)
+
+if __name__ == '__main__':
+    main()

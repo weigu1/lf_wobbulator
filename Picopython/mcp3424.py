@@ -11,11 +11,10 @@
     ± 2.048V differentially.
     Adr0 and Adr1 to GND or floating 0b000 -> 0x68
 """
-    
 
 __version__ = "0.2.0"
 __author__ = "Guy WEILER weigu.lu"
-__copyright__ = "Copyright 2021, weigu.lu"
+__copyright__ = "Copyright 2022, weigu.lu"
 __credits__ = ["Guy WEILER", "Jean-Claude FELTES"]
 __license__ = "GPL"
 __maintainer__ = "Guy WEILER"
@@ -53,7 +52,8 @@ class MCP3424():
         device_list = self.i2c.scan()    
         for devices in device_list:        
             print(hex(devices))
-            if devices == self.MCP3424_ADDRESS:
+            if (devices & 0xF8) == self.MCP3424_ADDRESS:
+                self.MCP3424_ADDRESS = devices
                 print("MCP3424 detected!")
             else:
                 print("Check your connections (don't forget the pull-ups)!")        
@@ -100,30 +100,27 @@ class MCP3424():
 
 ### MAIN #####################################################################
 
+I2C_FREQ = 400000
+I2C_BUS_NR = 0 # we use I2C0 on pin 8 and 9
+PIN_SDA = 8 
+PIN_SCL = 9
+ACD_CHANNEL = 1   # from 4
+ACD_CONT_MODE = 1 # 0 = manual mode
+ACD_BITS = 16     # 12(160sps), 14(60sps), 16(15sps), 18(3.75sps)
+ADC_GAIN = 1      # 1V/V, 2V/V, 4V/V, 8V/V
+
 def main():
-    
-    I2C_FREQ = 400000
-    I2C_BUS_NR = 0 # we use I2C0 on pin 8 and 9
-    PIN_SDA = 8 
-    PIN_SCL = 9
-    ACD_CHANNEL = 1   # from 4
-    ACD_CONT_MODE = 1 # 0 = manual mode
-    ACD_BITS = 16     # 12(160sps), 14(60sps), 16(15sps), 18(3.75sps)
-    ADC_GAIN = 1      # 1V/V, 2V/V, 4V/V, 8V/V
-        
     adc = MCP3424(I2C_BUS_NR, PIN_SCL, PIN_SDA, I2C_FREQ, channel=ACD_CHANNEL,
                   cont=ACD_CONT_MODE, bits=ACD_BITS, gain=ADC_GAIN)    
-    config_byte = adc.get_config_byte()
+    adc_config_byte = adc.get_config_byte()
     while True :        
         #print(hex(config_byte))
-        adc_value = adc.read_adc(config_byte)
+        adc_value = adc.read_adc(adc_config_byte)
         print("ADC value: " + str(adc_value))        
-        voltage = adc_value/(2**adc.get_bits())*4.096        
+        voltage = adc_value/(2**adc.get_bits())*4.096
         print ("Voltage = " + "{:1.4f}".format(voltage) + " V")
         print ("********************************* ")
         sleep(1)    
-
-
 
 if __name__ == '__main__':
     main()
