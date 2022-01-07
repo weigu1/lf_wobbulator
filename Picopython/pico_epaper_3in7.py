@@ -8,7 +8,6 @@
 # * | Date        :   2021-06-01
 #
 # Tweaked by Weigu.lu 2022
-# SPI0 with 1M instead SPI1 with 4M
 # Pins:
 # DC - 2 
 # CS - 3
@@ -54,13 +53,6 @@ import utime
 EPD_WIDTH       = 280
 EPD_HEIGHT      = 480
 
-DC_PIN          = 2
-CS_PIN          = 3
-RST_PIN         = 11
-BUSY_PIN        = 10
-
-HEADER = "lf-wobbulator by Guy WEILER and Jean-Claude FELTES"
-
 EPD_3IN7_lut_1Gray_GC =[
 0x2A,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#1
 0x05,0x2A,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,#2
@@ -89,13 +81,13 @@ EPD_3IN7_lut_1Gray_DU =[
 0x22,0x22,0x22,0x22,0x22
 ]
 
-
-
 class EPD_3in7:
-    def __init__(self):
-        self.reset_pin = Pin(RST_PIN, Pin.OUT)        
-        self.busy_pin = Pin(BUSY_PIN, Pin.IN, Pin.PULL_UP)
-        self.cs_pin = Pin(CS_PIN, Pin.OUT)
+    def __init__(self,  pin_dc=8, pin_cs=9, pin_rst=12, pin_busy=13):
+        self.pin_dc = Pin(pin_dc, Pin.OUT)
+        self.pin_cs = Pin(pin_cs, Pin.OUT)
+        self.pin_rst = Pin(pin_rst, Pin.OUT)        
+        self.pin_busy = Pin(pin_busy, Pin.IN, Pin.PULL_UP)
+
         self.width = EPD_WIDTH
         self.height = EPD_HEIGHT
         
@@ -116,8 +108,7 @@ class EPD_3in7:
                   polarity = 1,
                   phase = 1,
                   bits = 8,
-                 )        
-        self.dc_pin = Pin(DC_PIN, Pin.OUT)        
+                 )                
 
         self.buffer_1Gray = bytearray(self.height * self.width // 8)
         #self.buffer_4Gray = bytearray(self.height * self.width // 4)
@@ -149,33 +140,33 @@ class EPD_3in7:
         self.spi.write(bytearray(data))
 
     def module_exit(self):
-        self.digital_write(self.reset_pin, 0)
+        self.digital_write(self.pin_rst, 0)
 
     # Hardware reset
     def reset(self):
-        self.digital_write(self.reset_pin, 1)
+        self.digital_write(self.pin_rst, 1)
         self.delay_ms(30) 
-        self.digital_write(self.reset_pin, 0)
+        self.digital_write(self.pin_rst, 0)
         self.delay_ms(3)
-        self.digital_write(self.reset_pin, 1)
+        self.digital_write(self.pin_rst, 1)
         self.delay_ms(30)   
 
     def send_command(self, command):
-        self.digital_write(self.dc_pin, 0)
-        self.digital_write(self.cs_pin, 0)
+        self.digital_write(self.pin_dc, 0)
+        self.digital_write(self.pin_cs, 0)
         self.spi_writebyte([command])
-        self.digital_write(self.cs_pin, 1)
+        self.digital_write(self.pin_cs, 1)
 
     def send_data(self, data):
-        self.digital_write(self.dc_pin, 1)
-        self.digital_write(self.cs_pin, 0)
+        self.digital_write(self.pin_dc, 1)
+        self.digital_write(self.pin_cs, 0)
         self.spi_writebyte([data])
-        self.digital_write(self.cs_pin, 1)
+        self.digital_write(self.pin_cs, 1)
         
     def ReadBusy(self):
         print("e-Paper busy")
         timeout = 0;
-        while(self.digital_read(self.busy_pin) == 1 and timeout < 100):      #  0: idle, 1: busy
+        while(self.digital_read(self.pin_busy) == 1 and timeout < 100):      #  0: idle, 1: busy
             self.delay_ms(100)
             timeout+=1
         self.delay_ms(200)
@@ -444,34 +435,38 @@ class EPD_3in7:
         # horizontal axes label
         fb_ls_b.text("f/Hz", 240, 272, b)       
 
-### MAIN #####################################################################
-
-def main():  
-    ''' We get no direct possibility to change the orientation.
-        So it is necessary to use the framebuffer an copy pixel by pixel
-        from one buffer to another. We use here only black and white'''
+##############################################################################
         
-    epd = EPD_3in7()    
-    b = 0 # for framebuffer
-    w = 1
-
+def create_default_epd():
+    """ We get no direct possibility to change the orientation.
+        So it is necessary to use the framebuffer an copy pixel by pixel
+        from one buffer to another. We use here only black and white"""
+    
+    HEADER = "lf-wobbulator by Guy WEILER and Jean-Claude FELTES"
+    PIN_DC          = 2
+    PIN_CS          = 3
+    PIN_RST         = 11
+    PIN_BUSY        = 10
+    epd = EPD_3in7(PIN_DC, PIN_CS, PIN_RST, PIN_BUSY)
     buf_ls_b       = bytearray(epd.height * epd.width // 8) # used by frame buffer (landscape)
     buf_epaper_p_b = bytearray(epd.height * epd.width // 8) # used on e-paper after calc. to match e-paper (portrait)
-
     fb_ls_b = framebuf.FrameBuffer(buf_ls_b, epd.height, epd.width, framebuf.MONO_VLSB)
-    fb_ls_b.fill(w)    
-    epd.header(55, 0, HEADER, fb_ls_b, b, w)    
+    fb_ls_b.fill(epd.w)    
+    epd.header(55, 0, HEADER, fb_ls_b, epd.b, epd.w)    
     x_axes_zero = 28
     y_axes_zero = 245
-    epd.axes(x_axes_zero, y_axes_zero, fb_ls_b, b, w)
+    epd.axes(x_axes_zero, y_axes_zero, fb_ls_b, epd.b, epd.w)
     print('Sending to display')
     buf_epaper_p_b = epd.rotate_landscape_2_portrait(epd.height, epd.width, buf_ls_b, buf_epaper_p_b)
     epd.EPD_3IN7_1Gray_Display(buf_epaper_p_b)
     print('Done!.......')    
-    #epd.Sleep()    
+    #epd.Sleep()
+    return epd
+    
+##############################################################################    
 
 if __name__=='__main__':
-    main()
+    epd = create_default_epd() 
 
 
 

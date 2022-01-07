@@ -16,7 +16,7 @@
     With 0.6V (output DDS) the max of pot = 180 for Vpp=5V !
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __author__ = "Guy WEILER weigu.lu"
 __copyright__ = "Copyright 2022, weigu.lu"
 __credits__ = ["Guy WEILER", "Jean-Claude FELTES"]
@@ -67,7 +67,7 @@ class AD9833():
         self.dds_cs.low()        
         self.spi.write(bytes([0x21, 0x00]))
         self.change_function(self.SINE)
-        self.change_freq(self.freq)
+        self.set_freq(self.freq)
         self.spi.write(bytes([0x20, 0x00])) #output on
         self.dds_cs.high()
         
@@ -82,7 +82,7 @@ class AD9833():
         #print(hex(b1),'\t',hex(b2),'\t',hex(b3),'\t',hex(b4))
         return bytes([b1,b2,b3,b4])
 
-    def change_freq(self, freq):
+    def set_freq(self, freq):
         """"""
         self.dds_cs.low()        
         #self.spi.write(bytes([0x21, 0x00]))        
@@ -122,7 +122,7 @@ def create_default_wave():
     POT_VALUE = 80 # max = 180, depends on board! set below calibration value
     wave = AD9833(CRYSTAL_FREQ, PIN_DDS_CS, PIN_SCK, PIN_MOSI, PIN_POT_CS, POT_VALUE)
     #wave.change_function(wave.SINE)
-    wave.change_freq(1000)
+    wave.set_freq(1000)
     return wave
 
 ##############################################################################
