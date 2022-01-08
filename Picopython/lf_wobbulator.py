@@ -37,7 +37,7 @@ def wobbulate():
     
     fr_list = tools.create_frequency_list(100,200,10) # start, stop, step
     print(fr_list)    
-    print("frequency,voltage")    
+    print("frequency\tvoltage")    
 
     for fr in fr_list:
         decade = int(log10(fr))+1        
@@ -60,7 +60,7 @@ def wobbulate():
         adc_value = adc_s_value/NR_SAMPLES
         voltage = (adc_value/(2**adc.get_bits())*4.096) # 1.0V is the DC offset!
         #print (str(i).replace('.',',') + ',' + str(voltage).replace('.',','))
-        print (str(fr) + ',' + str(voltage))
+        print (str(fr) + '\t' + str(voltage))
 
     if DISPLAY:
         epd = EPD_3in7(PIN_DC, PIN_CS, PIN_RST, PIN_BUSY)
