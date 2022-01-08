@@ -1,7 +1,8 @@
 
--# lf_wobbulator
+# lf_wobbulator
 
 ## Measure the frequency response of filter up to 1MHz
+A project by Guy and Jean-Claude
 
 *** under heavy construction, but coming soon ***
 
