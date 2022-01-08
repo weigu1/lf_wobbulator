@@ -108,6 +108,42 @@ class LF_Wobb_Tools():
             Pin(pin_C4, Pin.IN)
             Pin(pin_C5, Pin.IN)        
             Pin(pin_discharge, Pin.IN)
+            
+    def create_frequency_list(self, start_freq, stop_freq, steps_per_decade):
+        """ The frequencies must be in the range between 1Hz and 1MHz """
+        start_decade = int(log10(start_freq))+1
+        stop_decade = int(log10(stop_freq))+1
+        print(str(start_decade) + '  ' + str(stop_decade))
+        freq_list = [start_freq]
+        if start_decade != stop_decade:
+            # from freq_start to end first decade
+            freq_step_1 = 10**start_decade//steps_per_decade
+            #print(freq_step_1)
+            for i in range(10**(start_decade-1),10**start_decade,freq_step_1):
+                if start_freq < i:
+                    freq_list.append(i)
+            decades_between = stop_decade-start_decade-1
+            print(decades_between)
+            for j in range(0,decades_between):
+                freq_step_b = 10**(start_decade+j+1)//steps_per_decade
+                print(freq_step_b)
+                for i in range(10**(start_decade+j),10**(start_decade+j+1),freq_step_b):            
+                    freq_list.append(i)
+            freq_step_3 = 10**stop_decade//steps_per_decade    
+            #print(freq_step_3)
+            for i in range(10**(stop_decade-1),10**stop_decade,freq_step_3):
+                if stop_freq > i:
+                    freq_list.append(i)
+            freq_list.append(stop_freq)
+        else:
+            freq_step = 10**start_decade//steps_per_decade
+            for i in range(10**(start_decade-1),10**start_decade,freq_step):
+                if start_freq < i and stop_freq > i:
+                    freq_list.append(i)
+            freq_list.append(stop_freq)        
+        return freq_list
+
+            
 
 ##############################################################################
         

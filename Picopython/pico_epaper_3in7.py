@@ -436,7 +436,28 @@ class EPD_3in7:
         fb_ls_b.text("f/Hz", 240, 272, b)       
 
 ##############################################################################
-        
+
+def init_e_paper(epd): #Init the display
+    """ black = 0, white = 1 """
+    buf_ls_b       = bytearray(epd.height * epd.width // 8) # used by frame buffer (landscape)
+    buf_epaper_p_b = bytearray(epd.height * epd.width // 8) # used on e-paper after calc. to match e-paper (portrait)
+    fb_ls_b = framebuf.FrameBuffer(buf_ls_b, epd.height, epd.width, framebuf.MONO_VLSB)
+    fb_ls_b.fill(epd.w)
+    return buf_ls_b, buf_epaper_p_b, fb_ls_b
+
+def cook_epaper_image(epd, fb_ls_b, header_text):    
+    epd.header(55, 0, header_text, fb_ls_b, epd.b, epd.w)    
+    x_axes_zero = 28
+    y_axes_zero = 245
+    epd.axes(x_axes_zero, y_axes_zero, fb_ls_b, epd.b, epd.w)    
+
+def write_e_paper(epd, buf_ls_b, buf_epaper_p_b):
+    print('Sending to display')
+    buf_epaper_p_b = epd.rotate_landscape_2_portrait(epd.height, epd.width, buf_ls_b, buf_epaper_p_b)
+    epd.EPD_3IN7_1Gray_Display(buf_epaper_p_b)
+    print('Done!.......')
+    #epd.Sleep()
+
 def create_default_epd():
     """ We get no direct possibility to change the orientation.
         So it is necessary to use the framebuffer an copy pixel by pixel
