@@ -122,7 +122,7 @@ def create_default_wave():
     POT_VALUE = 80 # max = 180, depends on board! set below calibration value
     wave = AD9833(CRYSTAL_FREQ, PIN_DDS_CS, PIN_SCK, PIN_MOSI, PIN_POT_CS, POT_VALUE)
     #wave.change_function(wave.SINE)
-    wave.set_freq(1000)
+    wave.set_freq(0)
     return wave
 
 ##############################################################################

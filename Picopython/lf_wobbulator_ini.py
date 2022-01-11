@@ -10,10 +10,14 @@
 CRYSTAL_FREQ = 25000000  # Crystal frequency in Hz
 
 # POT (AD9833 breakout board)
-POT_VALUE = 81 # max = 180, depends on board! set below calibration value
+POT_VALUE = 77 # max = 180, depends on board! set below calibration value
+POT_START_VALUE = 75 # start value for calibration
+MAX_VOLTAGE = 1.8
+CAL_FREQ = 1000
+
 
 # ADC
-NR_SAMPLES = 20
+NR_SAMPLES = 3
 ACD_CHANNEL = 1   # from 4
 ACD_CONT_MODE = 1 # 0 = manual mode
 ACD_BITS = 16     # 12(160sps), 14(60sps), 16(15sps), 18(3.75sps)
@@ -30,7 +34,7 @@ PIN_SDA = 8
 PIN_SCL = 9
 # Capacitor pins
 PIN_DISCHARGE = 13
-PIN_C1 = 22
+PIN_C1 = 12
 PIN_C2 = 21    
 PIN_C3 = 20
 PIN_C4 = 19    

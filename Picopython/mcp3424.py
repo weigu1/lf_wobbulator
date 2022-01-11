@@ -75,26 +75,32 @@ class MCP3424():
         """ Reset with General call """
         self.i2c.writeto(self.MCP3424_ADDRESS, b'06')
         
-    def read_adc(self, config_byte):
+    def read_adc(self):
         """ Read data from MCP3424
             12, 14 or 16 bit: 2 bytes data + config byte
             18 bit: 3 bytes data + config byte """
+        config_byte = self.get_config_byte()
         data = self.i2c.readfrom(self.MCP3424_ADDRESS, 4)        
         if data[3] == config_byte:
             #print("We use 18 bit: 3.75 SPS")
-            raw_adc = ((data[0] & 0x03) * 65536) + (data[1] * 256) + data[2] # 18-bits
+            adc_value = ((data[0] & 0x03) * 65536) + (data[1] * 256) + data[2] # 18-bits
         elif data[2] & 0x0C == 0x08:
             #print("We use 16 bit: 15 SPS")
-            raw_adc = (data[0] * 256) + data[1] # 12-bits
+            adc_value = (data[0] * 256) + data[1] # 12-bits
         elif data[2] & 0x0C == 0x04:
             #print("We use 14 bit: 60 SPS")
-            raw_adc = ((data[0] & 0x3F) * 256) + data[1] # 14-bits
+            adc_value = ((data[0] & 0x3F) * 256) + data[1] # 14-bits
         elif data[2] & 0x0C == 0x00:
             #print("We use 12 bit: 240 SPS")
-            raw_adc = ((data[0] & 0x0F) * 256) + data[1] # 12-bits
+            adc_value = ((data[0] & 0x0F) * 256) + data[1] # 12-bits
         else:
-            raw_adc = -1
-        return raw_adc
+            adc_value = -1
+        voltage = adc_value/(2**self.get_bits())*4.096    
+        return adc_value, voltage
+    
+    def read_voltage(self):        
+        adc_value, voltage = self.read_adc()        
+        return voltage
 
 ##############################################################################
         
@@ -109,10 +115,9 @@ def create_default_adc():
     ADC_GAIN = 1      # 1V/V, 2V/V, 4V/V, 8V/V
     adc = MCP3424(I2C_BUS_NR, PIN_SCL, PIN_SDA, I2C_FREQ, channel=ACD_CHANNEL,
                   bits=ACD_BITS, gain=ADC_GAIN, cont=ACD_CONT_MODE)    
-    adc_config_byte = adc.get_config_byte()    
-    adc_value = adc.read_adc(adc_config_byte)
-    print("ADC value: " + str(adc_value))        
-    voltage = adc_value/(2**adc.get_bits())*4.096
+    
+    adc_value, voltage = adc.read_adc()
+    print("ADC value: " + str(adc_value))
     print ("Voltage = " + "{:1.4f}".format(voltage) + " V")    
     return adc
 

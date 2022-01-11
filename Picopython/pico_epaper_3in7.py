@@ -36,7 +36,7 @@
 # THE SOFTWARE.
 #
 
-__version__ = "0.0.1"
+__version__ = "0.4.0"
 __author__ = "Guy WEILER weigu.lu"
 __copyright__ = "Copyright 2022, weigu.lu"
 __credits__ = ["Guy WEILER", "Jean-Claude FELTES"]
@@ -48,6 +48,7 @@ __status__ = "Prototype" # "Prototype", "Development", or "Production"
 from machine import Pin, SPI
 import framebuf
 import utime
+from math import log10
 
 # Display resolution
 EPD_WIDTH       = 280
@@ -376,64 +377,80 @@ class EPD_3in7:
             y = n-1
         return buf_portrait    
 
-    def header(self, x, y, header, fb_ls_b, b, w):
-        '''Print the header line (white on black rectangle)'''
-        margin_h = 4
-        margin_v = 2
-        fb_ls_b.fill_rect(x, y, (len(header)*8)+(2*margin_h), 2*margin_v+8, b)
-        fb_ls_b.text(header, margin_h+x, margin_v, w)
+    def draw_header(self, img, header, fb_ls_b):
+        '''Print the header line (white on black rectangle)'''        
+        fb_ls_b.fill_rect(img["header_x"], img["header_y"], (len(header)*8)+(2*img["header_h_margin"]),
+                          2*img["header_v_margin"]+8, img["b"])
+        fb_ls_b.text(header, img["header_h_margin"]+img["header_x"], img["header_v_margin"], img["w"])
         
-    def axes(self, x_zero, y_zero, fb_ls_b, b, w):
-        x_axes_margin_right = 0
-        y_axes_margin_top = 10
-        x_length = EPD_HEIGHT-x_zero -x_axes_margin_right #Lansdscape!
-        y_length = EPD_WIDTH-(EPD_WIDTH-y_zero)-y_axes_margin_top
-        y_end = y_zero-y_length
-        x_end = x_zero+x_length
+    def draw_axes(self, img, fb_ls_b):        
         # double lines for axes
-        fb_ls_b.vline(x_zero, y_end, y_length, b)
-        fb_ls_b.vline(x_zero-1, y_end, y_length+1, b)
-        fb_ls_b.hline(x_zero, y_zero, x_length, b)
-        fb_ls_b.hline(x_zero-1, y_zero+1, x_length+1, b)
-        # vertical axes ticklines
-        vtick_dist = 75 # = vtick text distance        
-        vaxes_last_tick_offset = 15
-        y_tick_end = y_end + vaxes_last_tick_offset        
-        for i in range(0,3):
-            fb_ls_b.hline(x_zero-3,i*vtick_dist+y_tick_end, 6, b)
-        # vertical axes ticks text        
-        vtick_txt_voffset = -3 # offset txt to ticks to align in the middle       
-        for i in range(0,3):
+        fb_ls_b.vline(img["x_axes_zero"], img["y_axis_end"], img["y_axis_length"], img["b"])
+        fb_ls_b.vline(img["x_axes_zero"]-1, img["y_axis_end"], img["y_axis_length"]+1, img["b"])
+        fb_ls_b.hline(img["x_axes_zero"], img["y_axes_zero"], img["x_axis_length"], img["b"])
+        fb_ls_b.hline(img["x_axes_zero"]-1, img["y_axes_zero"]+1, img["x_axis_length"]+1, img["b"])
+        # vertical axes ticklines                
+        for i in range(0,img["y_axis_tick_number"]):
+            fb_ls_b.hline(img["x_axes_zero"]-3,i*img["y_axis_tick_dist"]+img["y_axis_tick_end_top"], 6, img["b"])
+        # vertical axes ticks text               
+        for i in range(0,img["y_axis_tick_number"]):
             if i != 0:
-                fb_ls_b.text("-", 0, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
-                fb_ls_b.text(str(i), 8, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
-            fb_ls_b.text("0", 16, i*vtick_dist+y_tick_end+vtick_txt_voffset, b)
+                fb_ls_b.text("-", 0, i*img["y_axis_tick_dist"]+img["y_axis_tick_end_top"]+img["y_axis_tick_txt_offset"], img["b"])
+                fb_ls_b.text(str(i), 8, i*img["y_axis_tick_dist"]+img["y_axis_tick_end_top"]+img["y_axis_tick_txt_offset"], img["b"])
+            fb_ls_b.text("0", 16, i*img["y_axis_tick_dist"]+img["y_axis_tick_end_top"]+img["y_axis_tick_txt_offset"], img["b"])
         # vertical axes arrow
-        fb_ls_b.line(x_zero-1-2,y_end+10,x_zero-1,y_end, b)
-        fb_ls_b.line(x_zero-1+3,y_end+10,x_zero-1+1,y_end, b)
-        fb_ls_b.line(x_zero-1-1,y_end+10,x_zero-1,y_end, b)
-        fb_ls_b.line(x_zero-1+2,y_end+10,x_zero-1+1,y_end, b)
+        fb_ls_b.line(img["x_axes_zero"]-1-2,img["y_axis_end"]+10,img["x_axes_zero"]-1,img["y_axis_end"], img["b"])
+        fb_ls_b.line(img["x_axes_zero"]-1+3,img["y_axis_end"]+10,img["x_axes_zero"]-1+1,img["y_axis_end"], img["b"])
+        fb_ls_b.line(img["x_axes_zero"]-1-1,img["y_axis_end"]+10,img["x_axes_zero"]-1,img["y_axis_end"], img["b"])
+        fb_ls_b.line(img["x_axes_zero"]-1+2,img["y_axis_end"]+10,img["x_axes_zero"]-1+1,img["y_axis_end"], img["b"])
         # vertical axes label
-        fb_ls_b.text("G/dB", 0, 0, b)
+        fb_ls_b.text("G/dB", 0, 0, img["b"])
         # horizontal axes ticklines
-        htick_dist = 73
-        htick_offset = x_zero
-        for i in range(0,7):
-            fb_ls_b.vline(i*htick_dist+htick_offset, y_zero-2, 6, b)
+        for i in range(0,img["x_axis_tick_number"]):
+            fb_ls_b.vline(i*img["x_axis_tick_dist"]+img["x_axis_tick_offset"], img["y_axes_zero"]-2, 6, img["b"])
         # horizontal axes arrow
-        fb_ls_b.line(x_end-10,y_zero-2,x_end,y_zero, b)
-        fb_ls_b.line(x_end-10,y_zero+3,x_end,y_zero+1, b)
-        fb_ls_b.line(x_end-10,y_zero-1,x_end,y_zero, b)
-        fb_ls_b.line(x_end-10,y_zero+2,x_end,y_zero+1, b)
-        # horizontal axes ticks text
-        htick_txt_dist = htick_dist
-        htick_txt_offset_1 = htick_offset-12
-        htick_txt_offset_2 = htick_txt_offset_1+16 # exp
-        for i in range(0,7):    
-            fb_ls_b.text(str(i), i*htick_txt_dist+htick_txt_offset_2, y_zero+10, b)
-            fb_ls_b.text("10", i*htick_txt_dist+htick_txt_offset_1, y_zero+15, b)
+        fb_ls_b.line(img["x_axis_end"]-10,img["y_axes_zero"]-2,img["x_axis_end"],img["y_axes_zero"], img["b"])
+        fb_ls_b.line(img["x_axis_end"]-10,img["y_axes_zero"]+3,img["x_axis_end"],img["y_axes_zero"]+1, img["b"])
+        fb_ls_b.line(img["x_axis_end"]-10,img["y_axes_zero"]-1,img["x_axis_end"],img["y_axes_zero"], img["b"])
+        fb_ls_b.line(img["x_axis_end"]-10,img["y_axes_zero"]+2,img["x_axis_end"],img["y_axes_zero"]+1, img["b"])
+        # horizontal axes ticks text        
+        for i in range(0,img["x_axis_tick_number"]):    
+            fb_ls_b.text(str(i), i*img["x_axis_tick_dist"]+img["x_axis_tick_txt_offset_2"], img["y_axes_zero"]+10, img["b"])
+            fb_ls_b.text("10", i*img["x_axis_tick_dist"]+img["x_axis_tick_txt_offset_1"], img["y_axes_zero"]+15, img["b"])
         # horizontal axes label
-        fb_ls_b.text("f/Hz", 240, 272, b)       
+        fb_ls_b.text("f/Hz", 240, 272, img["b"])
+        
+    def draw_grid_crosses(self, img, fb_ls_b):        
+        for j in range(0,img["y_axis_tick_number"]):            
+            for i in range(0,img["x_axis_tick_number"]):
+                fb_ls_b.vline(i*img["x_axis_tick_dist"]+img["x_axis_tick_offset"],
+                              j*img["y_axis_tick_dist"]+img["y_axis_tick_end_top"]-img["grid_cross_length"]//2,
+                              img["grid_cross_length"], img["b"])
+                fb_ls_b.hline(i*img["x_axis_tick_dist"]+img["x_axis_tick_offset"]-img["grid_cross_length"]//2,
+                              j*img["y_axis_tick_dist"]+img["y_axis_tick_end_top"], img["grid_cross_length"], img["b"])
+    def draw_3db_line(self, img, fb_ls_b):
+        y_3db = img["y_axes_margin_top"]+img["y_axis_last_tick_offset"]+3*img["y_axis_tick_dist"]//10
+        y_3db_txt_offset = 8
+        fb_ls_b.hline(img["x_axes_zero"]-3,y_3db, 6, img["b"])        
+        fb_ls_b.text("-3", y_3db_txt_offset, y_3db+img["y_axis_tick_txt_offset"], img["b"])
+        
+        for x in range(img["x_axes_zero"],img["x_axes_zero"]+img["x_axis_length"]):            
+            if x%2==0:                
+                fb_ls_b.vline(x, y_3db, 1, img["b"])
+                #img["y_tick_end"]+10
+
+    def draw_data_points(self, img, freq_list, ampl_list, ref_voltage, fb_ls_b):        
+        img["x_axis_tick_dist"] = 73        
+        x_old = img["x_axes_zero"]
+        y_old = 25
+        for i in range(0,len(freq_list)):
+            x = int(img["x_axes_zero"] + (log10(freq_list[i])*img["x_axis_tick_dist"]))            
+            G = ampl_list[i]/ref_voltage
+            Gdb = 20*log10(G)            
+            y = int(25-Gdb*img["y_axis_tick_dist"]/10)            
+            fb_ls_b.line(x_old, y_old, x, y, img["b"])
+            x_old = x
+            y_old = y            
 
 ##############################################################################
 
@@ -445,12 +462,28 @@ def init_e_paper(epd): #Init the display
     fb_ls_b.fill(epd.w)
     return buf_ls_b, buf_epaper_p_b, fb_ls_b
 
-def cook_epaper_image(epd, fb_ls_b, header_text):    
-    epd.header(55, 0, header_text, fb_ls_b, epd.b, epd.w)    
-    x_axes_zero = 28
-    y_axes_zero = 245
-    epd.axes(x_axes_zero, y_axes_zero, fb_ls_b, epd.b, epd.w)    
+def cook_e_paper_image(epd, header_text, freq_list, ampl_list, max_voltage, fb_ls_b):
+    img = {"b":0,"w":1,"header_x":55, "header_y":0,"header_h_margin":4,"header_v_margin":2,
+           "x_axes_zero":28,"y_axes_zero":245, "x_axes_margin_right":0,"y_axes_margin_top":10,
+           "y_axis_tick_dist":40, "y_axis_tick_number":6, "y_axis_last_tick_offset":15,
+           "y_axis_tick_txt_offset":-3, "x_axis_tick_dist":73,"x_axis_tick_number":7,
+           "grid_cross_length":5,
+          }    
+    img["x_axis_length"] = EPD_HEIGHT-img["x_axes_zero"] -img["x_axes_margin_right"] #Lansdscape!
+    img["y_axis_length"] = EPD_WIDTH-(EPD_WIDTH-img["y_axes_zero"])-img["y_axes_margin_top"]
+    img["x_axis_end"] = img["x_axes_zero"]+img["x_axis_length"]
+    img["y_axis_end"] = img["y_axes_zero"]-img["y_axis_length"]
+    img["y_axis_tick_end_top"] = img["y_axis_end"] + img["y_axis_last_tick_offset"]
+    img["x_axis_tick_offset"] = img["x_axes_zero"]            
+    img["x_axis_tick_txt_offset_1"] = img["x_axis_tick_offset"]-12
+    img["x_axis_tick_txt_offset_2"] = img["x_axis_tick_txt_offset_1"]+16 # exp
 
+    epd.draw_header(img, header_text, fb_ls_b)    
+    epd.draw_axes(img, fb_ls_b)
+    epd.draw_3db_line(img, fb_ls_b)
+    epd.draw_grid_crosses(img, fb_ls_b)
+    epd.draw_data_points(img, freq_list, ampl_list, max_voltage, fb_ls_b)
+    
 def write_e_paper(epd, buf_ls_b, buf_epaper_p_b):
     print('Sending to display')
     buf_epaper_p_b = epd.rotate_landscape_2_portrait(epd.height, epd.width, buf_ls_b, buf_epaper_p_b)
@@ -468,20 +501,12 @@ def create_default_epd():
     PIN_CS          = 3
     PIN_RST         = 11
     PIN_BUSY        = 10
+    dummy_freq_list = [10,100,1000,10000,100000,1000000]
+    dummy_ampl_list = [1.8,2,1,0.1,0.01,0.1]
     epd = EPD_3in7(PIN_DC, PIN_CS, PIN_RST, PIN_BUSY)
-    buf_ls_b       = bytearray(epd.height * epd.width // 8) # used by frame buffer (landscape)
-    buf_epaper_p_b = bytearray(epd.height * epd.width // 8) # used on e-paper after calc. to match e-paper (portrait)
-    fb_ls_b = framebuf.FrameBuffer(buf_ls_b, epd.height, epd.width, framebuf.MONO_VLSB)
-    fb_ls_b.fill(epd.w)    
-    epd.header(55, 0, HEADER, fb_ls_b, epd.b, epd.w)    
-    x_axes_zero = 28
-    y_axes_zero = 245
-    epd.axes(x_axes_zero, y_axes_zero, fb_ls_b, epd.b, epd.w)
-    print('Sending to display')
-    buf_epaper_p_b = epd.rotate_landscape_2_portrait(epd.height, epd.width, buf_ls_b, buf_epaper_p_b)
-    epd.EPD_3IN7_1Gray_Display(buf_epaper_p_b)
-    print('Done!.......')    
-    #epd.Sleep()
+    buf_ls_b, buf_epaper_p_b, fb_ls_b = init_e_paper(epd)
+    cook_e_paper_image(epd, HEADER, dummy_freq_list, dummy_ampl_list, fb_ls_b) 
+    write_e_paper(epd, buf_ls_b, buf_epaper_p_b)
     return epd
     
 ##############################################################################    

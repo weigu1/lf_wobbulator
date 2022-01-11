@@ -28,17 +28,17 @@ class LF_Wobb_Tools():
         pass
         # init SPI
 
-    def calibrate_pot(self, wave, adc, pot_value):
+    def calibrate_pot(self, wave, adc, max_voltage = 1.8, cal_freq = 1000, pot_start_value = 70):
         """ Calibrate the potentiometer at 1Hz to get 2Vpp """
         print("Calibrating")
         NR_SAMPLES = 20
         adc_config_byte = adc.get_config_byte()
-        wave.set_freq(1000)
-        pot_value = pot_value-1
-        voltage = 0
-        self.switch_cap(4)
+        wave.set_freq(cal_freq)
+        pot_value = pot_start_value-1
+        voltage = 0        
+        self.switch_cap(log10(cal_freq)+1)
         counter = 0
-        while(voltage<2.0):
+        while(voltage<max_voltage):
             pot_value += 1
             print(pot_value)
             wave.set_potentiometer(pot_value)
@@ -57,9 +57,9 @@ class LF_Wobb_Tools():
             print("Pot value (POT) too high!")
         else:
             print("Pot calibrated; we needed",counter-1,"trials")
-        return pot_value    
+        return pot_value, voltage    
 
-    def switch_cap(self, decade, pin_discharge = 13, pin_C1 = 22, pin_C2 = 21, pin_C3 = 20, pin_C4 = 19, pin_C5 = 18):
+    def switch_cap(self, decade, pin_discharge = 13, pin_C1 = 12, pin_C2 = 21, pin_C3 = 20, pin_C4 = 19, pin_C5 = 18):
         """        """
         if decade == 1: # 100µ        
             gnd = Pin(pin_C1, Pin.OUT)
@@ -112,8 +112,7 @@ class LF_Wobb_Tools():
     def create_frequency_list(self, start_freq, stop_freq, steps_per_decade):
         """ The frequencies must be in the range between 1Hz and 1MHz """
         start_decade = int(log10(start_freq))+1
-        stop_decade = int(log10(stop_freq))+1
-        print(str(start_decade) + '  ' + str(stop_decade))
+        stop_decade = int(log10(stop_freq))+1        
         freq_list = [start_freq]
         if start_decade != stop_decade:
             # from freq_start to end first decade
@@ -123,10 +122,9 @@ class LF_Wobb_Tools():
                 if start_freq < i:
                     freq_list.append(i)
             decades_between = stop_decade-start_decade-1
-            print(decades_between)
+            #print(decades_between)
             for j in range(0,decades_between):
-                freq_step_b = 10**(start_decade+j+1)//steps_per_decade
-                print(freq_step_b)
+                freq_step_b = 10**(start_decade+j+1)//steps_per_decade                
                 for i in range(10**(start_decade+j),10**(start_decade+j+1),freq_step_b):            
                     freq_list.append(i)
             freq_step_3 = 10**stop_decade//steps_per_decade    
@@ -180,12 +178,13 @@ def create_default_wobb():
     wave = AD9833(CRYSTAL_FREQ, PIN_DDS_CS, PIN_SCK, PIN_MOSI, PIN_POT_CS, POT_VALUE)
     tools = LF_Wobb_Tools()
     pot_value = POT_VALUE # if no calibration
-    pot_value = 78 # if no calibration
-    #pot_value = tools.calibrate_pot(wave, adc, pot_value)    
+    pot_value = 77 # if no calibration
+    max_voltage = 1.8
+    #pot_value, max_voltage = tools.calibrate_pot(wave, adc)    
     ### MAIN ###
     freq = 1000
     decade = int(log10(freq))+1
-    print("decade = " + str(decade))
+    #print("decade = " + str(decade))
     exp = decade -1
     tools.switch_cap(decade, PIN_DISCHARGE, PIN_C1, PIN_C2, PIN_C3, PIN_C4, PIN_C5)    
     wave.set_freq(freq)
