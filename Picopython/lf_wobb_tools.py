@@ -161,7 +161,7 @@ def create_default_wobb():
     PIN_C4 = 19    
     PIN_C5 = 18
     # Samples used to calculate mean value
-    NR_SAMPLES = 20
+    NR_SAMPLES = 3
     # I2C and ADC
     I2C_FREQ = 400000
     I2C_BUS_NR = 0 # we use I2C0 on pin 8 and 9
@@ -195,14 +195,13 @@ def create_default_wobb():
     discharge = Pin(PIN_DISCHARGE, Pin.IN)
     wave.set_potentiometer(pot_value)
     sleep(5/(10**exp))
-    adc_s_value = adc.read_adc(adc_config_byte) #dummy read
+    voltage = adc.read_voltage() #dummy read
     sleep(0.1)    
-    adc_s_value = 0
+    voltage_sum = 0
     for j in range(0,NR_SAMPLES):
         sleep(0.1)
-        adc_s_value += adc.read_adc(adc_config_byte)
-    adc_value = adc_s_value/NR_SAMPLES
-    voltage = (adc_value/(2**adc.get_bits())*4.096) # 1.0V is the DC offset!    
+        voltage_sum += adc.read_voltage()
+    voltage = voltage_sum/NR_SAMPLES    
     print (str(freq) + 'Hz\t' + str(voltage) + 'V')
     return wave, adc 
 

@@ -34,7 +34,7 @@ PIN_SDA = 8
 PIN_SCL = 9
 # Capacitor pins
 PIN_DISCHARGE = 13
-PIN_C1 = 12
+PIN_C1 = 22
 PIN_C2 = 21    
 PIN_C3 = 20
 PIN_C4 = 19    

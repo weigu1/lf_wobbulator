@@ -54,20 +54,19 @@ def wobbulate():
         discharge = Pin(PIN_DISCHARGE, Pin.IN)
         wave.set_potentiometer(pot_value)
         sleep(5/(10**exp))
-        adc_s_value = adc.read_adc(adc_config_byte) #dummy read
-        sleep(0.1)    
-        adc_s_value = 0
+        voltage = adc.read_voltage() #dummy read
+        sleep(0.1)      
+        voltage_sum = 0
         for j in range(0,NR_SAMPLES):
             sleep(0.1)
-            adc_value = adc.read_adc(adc_config_byte)            
-            adc_s_value += adc_value
-            print(str(adc_value) + '\t',end='')
-        adc_value = adc_s_value/NR_SAMPLES
-        print("avg: " + str(adc_value))
-        voltage = (adc_value/(2**adc.get_bits())*4.096-1.08) # 1.0V is the DC offset!
-        #print (str(i).replace('.',',') + ',' + str(voltage).replace('.',','))       
+            voltage = adc.read_voltage()
+            voltage_sum += voltage
+            print(str(voltage) + '\t',end='')
+        voltage = voltage_sum/NR_SAMPLES
+        print("avg: " + str(voltage))
         ampl_volt_list.append(voltage)                
         print (str(fr) + '\t' + str(voltage))
+        #print (str(i).replace('.',',') + ',' + str(voltage).replace('.',','))
     #print(ampl_volt_list)
     
     end = time()
