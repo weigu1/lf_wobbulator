@@ -4,7 +4,7 @@
 ## Measure the frequency response of filter up to 1MHz
 A project by Guy and Jean-Claude
 
-*** under heavy construction, but coming soon ***
+*** sorry on hold ***
 
 ![lf_wobbulator](png/lf_wobbulator_800.png "lf_wobbulator")
 
